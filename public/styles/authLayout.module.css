@@ -1,0 +1,28 @@
+.imgStyle {
+  @apply bg-gradient-to-r from-blue-500 to-indigo-500 rounded-l-md;
+  position: relative;
+  overflow: hidden;
+}
+
+.mainImg {
+  background: url("../assets/course.jpg");
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 20%;
+}
+
+.enrollImg {
+  background: url("../assets/course.jpg");
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 20%;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}

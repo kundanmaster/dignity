@@ -1,0 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/* width */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --color-primarygold: #F27B21;
+   /* Example color */
+  --color-goldlight: #1D3563 ; /* Example color */
+  --color-amber-300: #1D3563 ; /* Example color */
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+@layer components {
+  .user-dashboard-topword{
+    @apply bg-white p-4 shadow-md font-bold rounded-md text-[#1D3563];
+  }
+   .animate-text{
+   @apply hover:text-[#F27B21] transition-all duration-300 ease-in-out;
+  }
+  .aside-li{
+   @apply cursor-pointer flex flex-row space-x-2 items-center hover:bg-black/10 hover:text-[#1D3563] hover:rounded-lg p-2
+  }
+  .form-label {
+    @apply text-gray-500 font-bold;
+  }
+  .form-input{
+    @apply mt-1 block w-full p-3 text-gray-900 border rounded-lg text-xs border-gray-300  dark:placeholder-gray-400 dark:text-white outline-goldlight/50 focus:outline-goldlight;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #8888883a;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.fira-sans-thin {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.fira-sans-extralight {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.fira-sans-light {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.fira-sans-regular {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.fira-sans-medium {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.fira-sans-semibold {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.fira-sans-bold {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.fira-sans-extrabold {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+.fira-sans-black {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.fira-sans-thin-italic {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 100;
+  font-style: italic;
+}
+
+.fira-sans-extralight-italic {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 200;
+  font-style: italic;
+}
+
+.fira-sans-light-italic {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.fira-sans-regular-italic {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.fira-sans-medium-italic {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.fira-sans-semibold-italic {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.fira-sans-bold-italic {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.fira-sans-extrabold-italic {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.fira-sans-black-italic {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+
+
+
+
+
+/* globals.css */
+
+/* Button Design 1 */
+.btn-design-1 {
+  border-radius: 0.375rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1rem;
+  margin: 0.25rem;
+  cursor: pointer;
+  border-bottom-width: 0.25rem;
+  border-left-width: 0.125rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background: linear-gradient(to top right, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.95));
+  border-color: rgba(0, 0, 0, 0.80);
+  color: white;
+  transition: text-shadow 0.3s ease;
+}
+.btn-design-1:hover {
+  color: var(--color-primarygold);
+  border: 2px solid var(--color-goldlight);
+}
+.btn-design-1:active {
+  border-color: rgba(0, 0, 0, 0.65);
+  box-shadow: none;
+}
+.btn-design-1 .btn-background {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transition: all 0.3s ease-out;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.1;
+}
+.btn-design-1:hover .btn-background {
+  width: 8rem;
+  height: 5rem;
+}
+
+/* Button Design 2 */
+/* .btn-design-2 {
+  border-radius: 0.375rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1rem;
+  margin: 0.25rem;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.80), rgba(0, 0, 0, 0.95));
+  color: white;
+  transition: color 0.3s ease, border 0.3s ease;
+  border: 2px solid transparent;
+}
+.btn-design-2:hover {
+  color: var(--color-goldlight);
+  border: 2px solid var(--color-amber-300);
+}
+.btn-design-2:active {
+  transform: scale(0.95);
+}
+.btn-design-2 .btn-highlight {
+  position: absolute;
+  right: 0;
+  width: 1rem;
+  height: 3rem;
+  margin-top: 0rem;
+  transition: all 1s ease;
+  transform: translateX(2rem);
+  background: white;
+  opacity: 0.1;
+  rotate: 12deg;
+}
+.btn-design-2:hover .btn-highlight {
+  transform: translateX(-10rem);
+} */

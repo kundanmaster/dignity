@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+          "@/components/*": ["src/components/*"],
+          "@/DashboardLayout/*": ["src/components/server/user/dashboard/*"],
+          "@/public":["public/*"],
+          "@/lib/*": ["src/lib/*"],
+          "@/hooks/*": ["src/hooks/*"],
+          "@helpers/*": ["src/helpers/*"]
+      }
+  }
+}
