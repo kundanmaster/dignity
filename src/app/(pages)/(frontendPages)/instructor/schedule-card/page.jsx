@@ -7,6 +7,7 @@ import { ClipLoader } from "react-spinners";
 import axios from "axios";
 import { useAuth } from "@/hooks/auth/authContext";
 import { toast } from "sonner";
+import ConfirmModal from "../../../../../components/client/common/ConfirmModel"; // Import the modal
 
 const ScheduleCard = () => {
   const { user } = useAuth();
@@ -23,6 +24,8 @@ const ScheduleCard = () => {
   const [courses, setCourses] = useState([]);
   const [courseDetails, setCourseDetails] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [errors, setErrors] = useState([]); // State to track validation errors
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -84,8 +87,35 @@ const ScheduleCard = () => {
     );
   };
 
+  const validateFields = () => {
+    const newErrors = fields.map((field, index) => {
+      let fieldErrors = {};
+
+      if (!field.date) {
+        fieldErrors.date = "Date is required";
+      }
+      if (!field.time_to) {
+        fieldErrors.time_to = "End time is required";
+      }
+      if (!field.time_from) {
+        fieldErrors.time_from = "Start time is required";
+      }
+      if (!field.url) {
+        fieldErrors.url = "URL is required";
+      }
+      if (!field.courseID) {
+        fieldErrors.courseID = "Course selection is required";
+      }
+
+      return fieldErrors;
+    });
+
+    setErrors(newErrors);
+    return newErrors.every((fieldErrors) => Object.keys(fieldErrors).length === 0);
+  };
+
   const handleSubmit = async () => {
-    setLoading(true); // Set loading to true
+    setLoading(true);
     try {
       const response = await axios.post("/apiRoutes/schedule", fields, {
         headers: {
@@ -95,20 +125,19 @@ const ScheduleCard = () => {
       if (response.data.success) {
         toast.success("Schedule saved successfully");
         console.log("Schedules saved successfully:", response.data.schedule);
-        // Handle success, e.g., show a success message or redirect
       } else {
         toast.error("Error saving schedules");
         console.error("Error saving schedules:", response.data.error);
-        // Handle error, e.g., show an error message
       }
     } catch (error) {
       toast.error("Error submitting schedules");
       console.error("Error submitting schedules:", error);
-      // Handle network or server error
     } finally {
-      setLoading(false); // Set loading to false
+      setLoading(false);
+      setIsModalOpen(false); // Close modal after submission
     }
   };
+
   const formatDateToMMDDYYYY = (date) => {
     if (!date) return "";
     const [year, month, day] = date.split("-");
@@ -120,10 +149,24 @@ const ScheduleCard = () => {
     const [month, day, year] = date.split("/");
     return `${year}-${month}-${day}`;
   };
+
+  const handleFormSubmit = () => {
+    if (validateFields()) {
+      setIsModalOpen(true); // Open modal if validation passes
+    } else {
+      toast.error("Please fill in all required fields");
+    }
+  };
+
   return (
     <InstructorDashboardLayout>
       <div className="p-4 border rounded bg-white shadow w-full">
-        <h2 className="text-2xl font-bold mb-4">Schedule your class</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          Schedule your class{" "}
+          <span className="text-red-400">
+            (* Please mention the details as per the zoom page)
+          </span>
+        </h2>
         {fields.map((field, index) => (
           <div key={index} className="mb-4">
             <div className="flex justify-between items-center">
@@ -143,8 +186,11 @@ const ScheduleCard = () => {
                 <label className="block text-gray-700">
                   Url meeting <span className="text-red-500 ">*</span>
                 </label>
-                <Link href="https://us05web.zoom.us/meeting/schedule?amp_device_id=18e5d3f3-5a20-49e9-a8f1-84b949663d7f">
-                  <button className="bg-black text-white px-4 py-2 rounded-lg ">
+                <Link
+                  href="https://us05web.zoom.us/meeting/schedule?amp_device_id=18e5d3f3-5a20-49e9-a8f1-84b949663d7f"
+                  target="_blank"
+                >
+                  <button className="bg-goldlight hover:bg-primarygold text-white px-4 py-2 rounded-lg ">
                     Generate URL
                   </button>
                 </Link>
@@ -163,6 +209,9 @@ const ScheduleCard = () => {
                   }
                   className="w-full p-2 border rounded-lg"
                 />
+                {errors[index]?.date && (
+                  <p className="text-red-500 text-sm">{errors[index].date}</p>
+                )}
               </div>
               <div>
                 <label className="block text-gray-700">Select Time To</label>
@@ -177,6 +226,9 @@ const ScheduleCard = () => {
                   max="18:00"
                   required
                 />
+                {errors[index]?.time_to && (
+                  <p className="text-red-500 text-sm">{errors[index].time_to}</p>
+                )}
               </div>
               <div>
                 <label className="block text-gray-700">Select Time From</label>
@@ -191,6 +243,9 @@ const ScheduleCard = () => {
                   max="18:00"
                   required
                 />
+                {errors[index]?.time_from && (
+                  <p className="text-red-500 text-sm">{errors[index].time_from}</p>
+                )}
               </div>
               <div>
                 <label className="block text-gray-700">
@@ -206,7 +261,10 @@ const ScheduleCard = () => {
                     onSelect={(value) => handleCourseSelect(value)}
                   />
                 ) : (
-                  <ClipLoader size={20} color={"#f0b65e"} />
+                  <ClipLoader size={20} color={"#F27B21"} />
+                )}
+                {errors[index]?.courseID && (
+                  <p className="text-red-500 text-sm">{errors[index].courseID}</p>
                 )}
               </div>
             </div>
@@ -221,55 +279,35 @@ const ScheduleCard = () => {
                   handleFieldChange(index, "url", e.target.value)
                 }
                 className="w-full  p-2 border rounded-lg"
-                placeholder="Enter your meeting url here"
+                placeholder="Enter the URL"
               />
+              {errors[index]?.url && (
+                  <p className="text-red-500 text-sm">{errors[index].url}</p>
+                )}
             </div>
           </div>
         ))}
-        <button
-          onClick={handleAddSlot}
-          className="bg-black text-white px-4 py-2 rounded mt-4 hover:bg-black/80"
-        >
-          Add more slot
-        </button>
-        <div className="text-center">
+
+        <div className="flex justify-between items-center mt-4">
           <button
-            className={`bg-black text-white px-4 py-2 rounded mt-4 hover:bg-black/80 ml-2 ${
-              loading ? "cursor-not-allowed opacity-50" : ""
-            }`}
-            onClick={handleSubmit}
-            disabled={loading}
-            type="button"
+            onClick={handleAddSlot}
+            className="bg-goldlight hover:bg-primarygold text-white px-4 py-2 rounded-lg"
           >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                <span className="ml-1">Saving...</span>
-              </span>
-            ) : (
-              "Submit"
-            )}
+            Add another slot
+          </button>
+          <button
+            onClick={handleFormSubmit}
+            className="bg-goldlight hover:bg-primarygold text-white px-4 py-2 rounded-lg"
+          >
+            Submit
           </button>
         </div>
+
+        <ConfirmModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleSubmit}
+        />
       </div>
     </InstructorDashboardLayout>
   );

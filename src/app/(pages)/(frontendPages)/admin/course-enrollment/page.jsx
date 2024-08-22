@@ -107,7 +107,7 @@ const CourseEnrollment = () => {
                   onSelect={(value) => handleUserSelect(value)}
                 />
               ) : (
-               <p><ClipLoader size={20} color={"#f0b65e"} /></p> 
+               <p><ClipLoader size={20} color={"#F27B21"} /></p> 
               )}
             </div>
           </div>
@@ -128,7 +128,7 @@ const CourseEnrollment = () => {
                   onSelect={(value) => handleCourseSelect(value)}
                 />
               ) : (
-                <p><ClipLoader size={20} color={"#f0b65e"}/></p>
+                <p><ClipLoader size={20} color={"#F27B21"}/></p>
               )}
             </div>
           </div>

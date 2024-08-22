@@ -143,9 +143,9 @@ const Banner = () => {
               healthcare. The opportunity awaits! Discover Dignity Medical
               Training today!
             </p>
-            <button className="bg-primarygold text-white py-2 px-4 rounded hover:bg-white hover:text-black transition-colors duration-300">
+            {/* <button className="bg-primarygold text-white py-2 px-4 rounded hover:bg-white hover:text-black transition-colors duration-300">
               Learn More About Dignity Medical Training
-            </button>
+            </button> */}
           </div>
         </section>
       </div>

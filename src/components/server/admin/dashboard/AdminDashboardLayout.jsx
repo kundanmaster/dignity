@@ -118,28 +118,28 @@ const AdminDashboardLayout = ({ children }) => {
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg dropdown border-2 border-gray-100 p-2 z-50">
-                <span className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-primarygold rounded-lg">
+                <span className="block w-full text-left px-4 py-2 text-gray-800 hover:text-white hover:bg-primarygold rounded-lg">
                   <span className="text-goldlight">Hi!</span>{" "}
                   {user ? user.firstname.toUpperCase() : "User"}
                 </span>
                 <Link href="/admin/dashboard">
-                  <p className="block px-4 py-2 text-gray-800 hover:bg-primarygold rounded-lg">
+                  <p className="block px-4 py-2 text-gray-800 hover:text-white hover:bg-primarygold rounded-lg">
                     Dashboard
                   </p>
                 </Link>
                 <Link href="/">
-                  <p className="block px-4 py-2 text-gray-800 hover:bg-primarygold rounded-lg">
+                  <p className="block px-4 py-2 text-gray-800 hover:text-white hover:bg-primarygold rounded-lg">
                     Home
                   </p>
                 </Link>
-                <Link href="">
-                  <p className="block px-4 py-2 text-gray-800 hover:bg-primarygold rounded-lg">
+                {/* <Link href="">
+                  <p className="block px-4 py-2 text-gray-800 hover:text-white hover:bg-primarygold rounded-lg">
                     Profile
                   </p>
-                </Link>
+                </Link> */}
                 <button
                   onClick={onLogout}
-                  className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-primarygold rounded-lg"
+                  className="block w-full text-left px-4 py-2 text-gray-800 hover:text-white hover:bg-primarygold rounded-lg"
                 >
                   Logout
                 </button>
@@ -180,7 +180,7 @@ const AdminDashboardLayout = ({ children }) => {
                       className={`flex items-center justify-between py-4 mt-2 px-4 w-full ${
                         openSubmenu[menuItem.label]
                           ? " text-goldlight rounded-lg"
-                          : "hover:bg-black/10 hover:text-goldlight hover:rounded-lg"
+                          : "hover:bg-black/10 hover:text-primarygold hover:rounded-lg"
                       }`}
                       onClick={() => toggleSubmenu(menuItem.label)}
                     >
@@ -211,7 +211,7 @@ const AdminDashboardLayout = ({ children }) => {
                                 className={`flex items-center justify-between py-2 px-4 w-full ${
                                   openSubmenu[submenuItem.sublabel]
                                     ? " text-goldlight rounded-lg"
-                                    : "hover:bg-gray-200 hover:text-goldlight hover:rounded-lg"
+                                    : "hover:bg-gray-200 hover:text-primarygold hover:rounded-lg"
                                 }`}
                                 onClick={() =>
                                   toggleSubmenu(submenuItem.sublabel)
@@ -243,7 +243,7 @@ const AdminDashboardLayout = ({ children }) => {
                                         className={`ml-2 text-left py-2 px-4 w-full ${
                                           selectedPage === nestedItem.sublabel
                                             ? "text-goldlight rounded-lg"
-                                            : "hover:bg-gray-200 hover:text-goldlight hover:rounded-lg"
+                                            : "hover:bg-gray-200 hover:text-primarygold hover:rounded-lg"
                                         }`}
                                         onClick={() =>
                                           setSelectedPage(nestedItem.sublabel)
@@ -262,7 +262,7 @@ const AdminDashboardLayout = ({ children }) => {
                                 className={`ml-2 text-left py-4 px-4 w-full ${
                                   selectedPage === submenuItem.sublabel
                                     ? "bg-black/5 text-goldlight rounded-lg"
-                                    : "hover:bg-gray-200 hover:text-goldlight hover:rounded-lg"
+                                    : "hover:bg-gray-200 hover:text-primarygold hover:rounded-lg"
                                 }`}
                                 onClick={() =>
                                   setSelectedPage(submenuItem.sublabel)
@@ -282,7 +282,7 @@ const AdminDashboardLayout = ({ children }) => {
                       className={`flex items-center justify-between py-4 my-2 px-4 w-full ${
                         selectedPage === menuItem.label
                           ? "bg-gray-200 text-goldlight rounded-lg"
-                          : "hover:bg-gray-200 hover:text-goldlight hover:rounded-lg"
+                          : "hover:bg-gray-200 hover:text-primarygold hover:rounded-lg"
                       }`}
                       onClick={() => {
                         router.push(menuItem.href);

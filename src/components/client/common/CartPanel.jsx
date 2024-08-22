@@ -1,5 +1,6 @@
-import React from "react";
-import Image from "next/image";
+import React from 'react';
+import Image from 'next/image';
+import { useCart } from '@/hooks/cart/cartContext';
 
 const calculateTotalPrice = (items) => {
   return items
@@ -10,8 +11,9 @@ const calculateTotalPrice = (items) => {
     .toFixed(2);
 };
 
-const CartPanel = ({ cartItems = [], onClose, onRemoveFromCart }) => {
-  cartItems = Array.isArray(cartItems) ? cartItems : [];
+const CartPanel = () => {
+  const { cartItems, removeFromCart, toggleCart } = useCart();
+
   const totalPrice = calculateTotalPrice(cartItems);
 
   const stripHtmlTags = (html) => {
@@ -24,7 +26,7 @@ const CartPanel = ({ cartItems = [], onClose, onRemoveFromCart }) => {
     <div className="fixed right-0 top-0 h-full w-full sm:w-1/5 bg-white shadow-lg p-4 z-[101] flex flex-col">
       <div className="flex justify-between items-center border-b pb-2 mb-4">
         <h2 className="text-xl font-bold">Cart</h2>
-        <button onClick={onClose} className="text-gray-800 hover:text-gray-500">
+        <button onClick={toggleCart} className="text-gray-800 hover:text-gray-500">
           <span aria-hidden="true" className="text-2xl">
             &times;
           </span>
@@ -57,7 +59,7 @@ const CartPanel = ({ cartItems = [], onClose, onRemoveFromCart }) => {
                 </p>
               </div>
               <button
-                onClick={() => onRemoveFromCart(item)}
+                onClick={() => removeFromCart(item.id)}
                 className="text-red-500 hover:text-red-700 flex-shrink-0"
               >
                 <span aria-hidden="true" className="text-xl">

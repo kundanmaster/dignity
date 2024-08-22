@@ -116,8 +116,11 @@ export async function GET(req) {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const urlId = url.pathname.split("/").pop(); // Get id from URL path if present
     const queryUserId = url.searchParams.get("user_id"); // Get user_id from query parameters
+    console.log(queryUserId);
+    
     const queryId = url.searchParams.get("id"); // Get id from query parameters
-
+    console.log(queryId);
+    
     // Convert query parameters to integers if they are numbers
     const userId = queryUserId && !isNaN(parseInt(queryUserId)) ? parseInt(queryUserId) : undefined;
     const id = queryId && !isNaN(parseInt(queryId)) ? parseInt(queryId) : undefined;

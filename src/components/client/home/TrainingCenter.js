@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 const TrainingCenter = () => {
@@ -88,8 +89,11 @@ const TrainingCenter = () => {
           </div>
         </div>
 
-        {/* Right Side Content */}  
-        <div className="md:w-1/2 flex flex-col items-center md:items-start md:pl-12" id="Instructors">
+        {/* Right Side Content */}
+        <div
+          className="md:w-1/2 flex flex-col items-center md:items-start md:pl-12"
+          id="Instructors"
+        >
           <h2 className="text-3xl font-bold mb-4 text-center md:text-left">
             Our Instructors
           </h2>
@@ -108,14 +112,11 @@ const TrainingCenter = () => {
             <li>Seasoned Caregivers</li>
             <li>Special Education Teachers</li>
           </ul>
-          <button
-            className="bg-primarygold text-white py-2 px-4 rounded hover:bg-goldlight hover:white transition-colors duration-300"
-            onClick={() =>
-              alert("View All Instructors functionality not yet implemented")
-            }
-          >
-            View All Instructors
-          </button>
+          <Link href="/instructorPageView">
+            <button className="bg-primarygold text-white py-2 px-4 rounded hover:bg-goldlight hover:white transition-colors duration-300">
+              View All Instructors
+            </button>
+          </Link>
         </div>
 
         {/* Sidebar for detailed view */}

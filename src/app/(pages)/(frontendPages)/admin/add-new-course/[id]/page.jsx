@@ -686,7 +686,7 @@ const AddNewCourse = ({ params }) => {
           <div>
             <div className="container mx-auto p-4">
               <p className="text-lg text-center font-semibold text-gray-700 mb-4">
-                Congratulations! You have completed adding a new course.
+              Congratulations! You are one click away to add new course.
               </p>
               {/* Display summary of entered data */}
               <div className="text-center">

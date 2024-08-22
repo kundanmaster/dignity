@@ -137,7 +137,7 @@ const ManageCourses = () => {
       <AdminDashboardLayout>
         {loading ? (
           <div className="flex justify-center items-center h-screen">
-            <ClipLoader size={50} color={"#f0b65e"} loading={loading} />
+            <ClipLoader size={50} color={"#F27B21"} loading={loading} />
           </div>
         ) : (
           <div>

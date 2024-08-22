@@ -4,17 +4,18 @@ import axios from "axios";
 import CourseCard from "./courseCard";
 import CartPanel from "../common/CartPanel"; // Adjust the import path based on your project structure
 import { toast } from "sonner";
-import { saveCartToLocalStorage, loadCartFromLocalStorage, addToCart, removeFromCart, calculateTotalPrice } from "@/utils/cartUtils";
+import { loadCartFromLocalStorage } from "@/utils/cartUtils";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
+import { useCart } from '@/hooks/cart/cartContext';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
-  const [cartItems, setCartItems] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { cartItems, isCartOpen, addToCart, removeFromCart, toggleCart } = useCart();
   const router = useRouter();
 
+  // Fetch Courses from API
   const fetchCourses = async () => {
     setLoading(true);
     try {
@@ -33,51 +34,17 @@ const Courses = () => {
     }
   };
 
+  // Load Cart Items from Local Storage
   useEffect(() => {
     fetchCourses();
     const loadedCartItems = loadCartFromLocalStorage();
     console.log(loadedCartItems);
-    
-    setCartItems(Array.isArray(loadedCartItems) ? loadedCartItems : []);
   }, []);
 
-  const handleAddToCart = (course) => {
-    if (!Array.isArray(cartItems)) {
-      toast.error("Cart is not loaded properly.");
-      return;
-    }
-
-    const courseExists = cartItems.some((item) => item.id === course.id);
-    if (courseExists) {
-      toast.error("Course already in cart.");
-      return;
-    }
-
-    const updatedCart = [...cartItems, course];
-    console.log(updatedCart);
-    
-    setCartItems(updatedCart);
-    saveCartToLocalStorage(updatedCart);
-    setIsCartOpen(true);
-  };
-
+  // Handle Course Enrollment
   const handleEnroll = (course) => {
     router.push(`user/enrollpage/${course.id}`);
   };
-
-  const handleRemoveFromCart = (courseId) => {
-    const updatedCart = cartItems.filter((item) => item.id !== courseId);
-    console.log(updatedCart);
-    
-    setCartItems(updatedCart);
-    saveCartToLocalStorage(updatedCart);
-  };
-
-  const handleCloseCart = () => {
-    setIsCartOpen(false);
-  };
-
-  const totalPrice = calculateTotalPrice(cartItems);
 
   return (
     <section
@@ -97,7 +64,7 @@ const Courses = () => {
             <CourseCard
               key={course.id}
               course={course}
-              onAddToCart={handleAddToCart}
+              onAddToCart={addToCart}
               onEnroll={handleEnroll}
             />
           ))}
@@ -110,15 +77,14 @@ const Courses = () => {
           {/* Dark Overlay */}
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-[100]"
-            onClick={handleCloseCart}
+            onClick={toggleCart}
             aria-hidden="true"
           />
           {/* Cart Panel */}
           <CartPanel
             cartItems={cartItems}
-            onClose={handleCloseCart}
-            onRemoveFromCart={handleRemoveFromCart}
-            totalPrice={totalPrice}
+            onClose={toggleCart}
+            onRemoveFromCart={removeFromCart}
           />
         </>
       )}

@@ -5,6 +5,7 @@ import AdminDashboardLayout from "@/components/server/admin/dashboard/AdminDashb
 import Editor from "@/components/client/common/Editor";
 import { useRouter, useParams } from "next/navigation";
 import { updateAdmin } from "../../../../../../utils/api";
+import { toast } from "sonner";
 
 // import { useAuth } from "@/hooks/auth/authContext";
 

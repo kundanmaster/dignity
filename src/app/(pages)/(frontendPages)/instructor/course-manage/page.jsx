@@ -177,7 +177,7 @@ const CourseManage = () => {
       <InstructorDashboardLayout>
         {loading ? (
           <div className="flex justify-center items-center h-screen">
-            <ClipLoader size={50} color={"#f0b65e"} loading={loading} />
+            <ClipLoader size={50} color={"#F27B21"} loading={loading} />
           </div>
         ) : (
           <div>
@@ -203,7 +203,7 @@ const CourseManage = () => {
               <div className="mt-8">
                 <div className="flex justify-end">
                   <Link href="/instructor/add-new-course/">
-                    <button className="rounded-full p-2 m-2 border-2 hover:border-black hover:text-amber-400">
+                    <button className="rounded-full p-2 m-2 border-2 border-goldlight hover:border-goldlight hover:text-primarygold">
                       + Add Course
                     </button>
                   </Link>

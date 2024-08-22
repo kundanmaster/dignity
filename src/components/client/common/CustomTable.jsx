@@ -142,7 +142,7 @@ const CustomTable = ({
                       e.stopPropagation(); // Prevents click from bubbling up
                       toggleMenu(item.id);
                     }}
-                    className="text-goldlight hover:text-amber-200 border-2 border-amber-400 p-2 rounded-xl"
+                    className="text-goldlight  border-2 border-goldlight hover:text-primarygold p-2 rounded-xl"
                   >
                     <PiDotsThreeOutlineVerticalDuotone />
                   </button>
@@ -165,7 +165,7 @@ const CustomTable = ({
                                 console.log(`Item clicked: ${menuItem.label} for ID: ${item.id}`);
                                 menuItem.onClick(item.id)();
                               }}
-                              className="block w-52 text-left px-4 py-2 m-2 rounded text-sm text-gray-700 hover:bg-amber-100"
+                              className="block w-52 text-left px-4 py-2 m-2 rounded text-sm text-gray-700 hover:bg-primarygold hover:text-white"
                               role="menuitem"
                             >
                               {menuItem.label}

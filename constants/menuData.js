@@ -32,7 +32,7 @@ export const menuData = [
     icon: <MdOutlineTask />,
     href: '#',
     submenu: [
-      { sublabel: 'Course Enrollment', href: '/admin/course-enrollment' },
+      // { sublabel: 'Course Enrollment', href: '/admin/course-enrollment' },
       { sublabel: 'Enrollment History', href: '/admin/enrollment-history' },
     ],
   },
@@ -106,16 +106,16 @@ export const InstructorData = [
     icon: <MdCollectionsBookmark />,
     href: '/instructor/course-manage',
   },
-  {
-    label: 'Sales report',
-    icon: <IoBarChart />,
-    href: '/instructor/sales-report',
-  },
-  {
-    label: 'Payout report',
-    icon: <TbReportMoney />,
-    href: '/instructor/payout-report',
-  },
+  // {
+  //   label: 'Sales report',
+  //   icon: <IoBarChart />,
+  //   href: '/instructor/sales-report',
+  // },
+  // {
+  //   label: 'Payout report',
+  //   icon: <TbReportMoney />,
+  //   href: '/instructor/payout-report',
+  // },
   
   {
     label: 'Messages',

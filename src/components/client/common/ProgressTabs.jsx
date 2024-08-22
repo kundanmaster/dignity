@@ -1,4 +1,3 @@
-// components/Tabs.js
 import React, { useState } from 'react';
 
 export default function Tabs({ tabs, children, onSubmit }) {
@@ -49,14 +48,15 @@ export default function Tabs({ tabs, children, onSubmit }) {
         >
           Previous
         </button>
-        <button
-          onClick={nextTab}
-          disabled={activeTab === tabs.length - 1}
-          className="btn-design-1">
-          <span className="btn-background"></span>
-          <span className="relative">Next</span>
-          
-        </button>
+        {activeTab < tabs.length - 1 && (
+          <button
+            onClick={nextTab}
+            className="btn-design-1"
+          >
+            <span className="btn-background"></span>
+            <span className="relative">Next</span>
+          </button>
+        )}
       </div>
     </div>
   );

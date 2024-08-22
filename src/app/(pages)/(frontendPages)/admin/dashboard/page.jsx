@@ -30,7 +30,7 @@ const Dashboard = () => {
       {
         label: "Revenue",
         data: [12000, 15000, 13000, 18000, 17000, 19000, 22000],
-        borderColor: "#FFD700",
+        borderColor: "#F27B21",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
       },
     ],

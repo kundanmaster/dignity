@@ -1,45 +1,45 @@
-'use client';
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+// contexts/CartContext.js
+"use client"
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { loadCartFromLocalStorage, saveCartToLocalStorage, calculateTotalPrice } from '@/utils/cartUtils';
 
-// Create the context with a default value of an empty array
-const CartContext = createContext([]);
+const CartContext = createContext();
 
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
-};
-
-// CartProvider component
 export const CartProvider = ({ children }) => {
-  // Load cart from localStorage on hook initialization
-  const [cart, setCart] = useState([]);
-  const firstRender=useRef(true)
+  const [cartItems, setCartItems] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-// Save cart to localStorage whenever it changes
-useEffect(() => {
-if(firstRender.current){
-   setCart(JSON.parse(localStorage.getItem('cart')))
-   firstRender.current=false;
- }else{
- localStorage.setItem('cart', JSON.stringify(cart));}
- }, [cart]);
+  useEffect(() => {
+    const loadedCartItems = loadCartFromLocalStorage();
+    setCartItems(Array.isArray(loadedCartItems) ? loadedCartItems : []);
+  }, []);
 
-  const addToCart = (item) => {
-    setCart((prevCart) => [...prevCart, item]);
+  const addToCart = (course) => {
+    if (!cartItems.some(item => item.id === course.id)) {
+      const updatedCart = [...cartItems, course];
+      setCartItems(updatedCart);
+      saveCartToLocalStorage(updatedCart);
+      setIsCartOpen(true);
+    }
   };
 
-  const removeFromCart = (item) => {
-    setCart((prevCart) => prevCart.filter((cartItem) => cartItem.id !== item.id));
+  const removeFromCart = (courseId) => {
+    const updatedCart = cartItems.filter(item => item.id !== courseId);
+    setCartItems(updatedCart);
+    saveCartToLocalStorage(updatedCart);
   };
 
-  const isInCart = (item) => cart.some((cartItem) => cartItem.id === item.id);
+  const toggleCart = () => {
+    setIsCartOpen(!isCartOpen);
+  };
+
+  const totalPrice = calculateTotalPrice(cartItems);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, isInCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, toggleCart, isCartOpen, totalPrice }}>
       {children}
     </CartContext.Provider>
   );
 };
+
+export const useCart = () => useContext(CartContext);

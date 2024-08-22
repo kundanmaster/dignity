@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 const Instructor = () => {
   return (
@@ -74,12 +75,16 @@ const Instructor = () => {
               </li>
             </ul>
             <div className="flex space-x-4">
-              <button className="bg-primarygold text-white py-2 px-4 rounded hover:bg-goldlight hover:text-white transition-colors duration-300">
-                VIEW ALL COURSES
-              </button>
-              <button className="border border-goldlight text-primarygold hover:bg-goldlight hover:text-white py-2 px-4 rounded-lg shadow-md">
-                CHECK OUT OUR ONLINE ZOOM CLASSES
-              </button>
+              <Link href="/allCoures">
+                <button className="bg-primarygold text-white py-2 px-4 rounded hover:bg-goldlight hover:text-white transition-colors duration-300">
+                  VIEW ALL COURSES
+                </button>
+              </Link>
+              <a className="" href="#online" >
+                <button className="border border-goldlight text-primarygold hover:bg-goldlight hover:text-white py-2 px-4 rounded-lg shadow-md">
+                  CHECK OUT OUR ONLINE ZOOM CLASSES
+                </button>
+              </a>
             </div>
           </div>
         </div>

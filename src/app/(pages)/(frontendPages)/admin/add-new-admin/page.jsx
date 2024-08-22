@@ -6,6 +6,7 @@ import Editor from "@/components/client/common/Editor";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/auth/authContext";
+import { toast } from "sonner";
 const AddNewAdmin = () => {
   const tabs = [
     "Basic info",

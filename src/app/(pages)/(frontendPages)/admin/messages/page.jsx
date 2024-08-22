@@ -345,7 +345,7 @@ const ChatList = ({ messages, onSelect,loading }) => {
     <>
     {loading ? (
       <div className="flex justify-center items-center h-screen">
-        <ClipLoader size={50} color={"#f0b65e"} />
+        <ClipLoader size={50} color={"#F27B21"} />
       </div>
     ) : (
     <div className="mt-4">

@@ -57,15 +57,15 @@ const Footer = () => {
             <div className="space-y-2">
               <div className="flex items-center">
                 <FaEnvelope className="mr-2" />
-                <a href="mailto:customerservice@dignity.training" className="hover:underline">customerservice@dignity.training</a>
+                <a href="mailto:contact@dignitymedicaltraining.com" className="hover:underline">contact@dignitymedicaltraining.com</a>
               </div>
               <div className="flex items-center">
                 <FaPhoneAlt className="mr-2" />
-                <a href="tel:1-480-322-1149" className="hover:underline">1-480-322-1149</a>
+                <a href="tel:+1(888)-404-6348" className="hover:underline">+1(888)-404-6348</a>
               </div>
               <div className="flex items-center">
                 <FaPhoneAlt className="mr-2" />
-                <a href="tel:1-480-253-2010" className="hover:underline">(Español) 1-480-253-2010</a>
+                <a href="tel:+1 (480)-351-2333" className="hover:underline">(Español) +1 (480)-351-2333</a>
               </div>
               <div className="flex items-center">
                 <FaMapMarkerAlt className="mr-2" />
@@ -92,9 +92,9 @@ const Footer = () => {
               <li><a href="#Instructors" className="hover:underline">Instructors</a></li>
               <li><a href="#testimonials" className="hover:underline">Testimonials</a></li>
               <li><a href="#faq" className="hover:underline">FAQ</a></li>
-              <li><a href="#privacypolicy" className="hover:underline">Privacy Policy</a></li>
-              <li><a href="#termsAndCondition" className="hover:underline">Terms of Service</a></li>
-              <li><a href="#refund" className="hover:underline">Refund Policy</a></li>
+              <li><a href="/privacypolicy" className="hover:underline">Privacy Policy</a></li>
+              <li><a href="/termsandcondition" className="hover:underline">Terms of Service</a></li>
+              {/* <li><a href="#refund" className="hover:underline">Refund Policy</a></li> */}
             </ul>
           </div>
 
