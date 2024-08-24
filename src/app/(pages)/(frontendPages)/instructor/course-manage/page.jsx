@@ -150,7 +150,7 @@ const CourseManage = () => {
   };
   useEffect(() => {
     if (courses.length === 0 && !loading) {
-      toast.error("No courses found. Please refine your search or try again.");
+      console.log("No courses found. Please refine your search or try again.");
     }
   }, [courses, loading]);
   const handleDelete = async (id) => {
@@ -162,7 +162,7 @@ const CourseManage = () => {
       await fetchCourses();
       setLoading(false);
     } catch (error) {
-      toast.error("Error deleting course:", error);
+      // toast.error("Error deleting course:", error);
       console.error("Error deleting course:", error);
       setLoading(false);
     }

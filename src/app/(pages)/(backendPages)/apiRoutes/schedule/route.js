@@ -2,44 +2,45 @@ import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { pool } from "@/lib/db"; // Ensure this imports your database connection
 
-
 export const GET = async (req) => {
-    const url = new URL(req.url);
-    const id = url.searchParams.get("id");
-    const token = req.cookies.get("token")?.value;
-  
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-  
-    try {
-      // Verify the JWT token (make sure to set your JWT_SECRET in environment variables)
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  
-      // Connect to the database
-      const client = await pool.connect();
-      let result;
-  
-      if (id) {
-        // If an ID is provided, fetch the user with that ID
-        result = await client.query("SELECT * FROM schedule WHERE course_id = $1", [id]);
-      } else {
-        // If no ID is provided, fetch all schedule with the role 'user'
-        result = await client.query("SELECT * FROM schedule");
-      }
-  
-      client.release();
-  
-      // Return the fetched data
-      return NextResponse.json({ authenticated: true, schedules: result.rows }, { status: 200 });
-  
-    } catch (error) {
-      console.error("Error verifying token or fetching data", error);
-      return NextResponse.json({ authenticated: false, message: 'Authentication failed or error fetching data' }, { status: 401 });
-    }
-  };
+  const url = new URL(req.url);
+  const courseId = url.searchParams.get("course_id");
+  const instructorId = url.searchParams.get("instructor_id");
+  const token = req.cookies.get("token")?.value;
 
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
+  try {
+    // Verify the JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Connect to the database
+    const client = await pool.connect();
+    let result;
+
+    if (courseId) {
+      // If a course ID is provided, fetch the schedule with that course ID
+      result = await client.query("SELECT * FROM schedule WHERE course_id = $1", [courseId]);
+    } else if (instructorId) {
+      // If an instructor ID is provided, fetch the schedule with that instructor ID
+      result = await client.query("SELECT * FROM schedule WHERE instructor_id = $1", [instructorId]);
+    } else {
+      // If no specific ID is provided, fetch all schedules
+      result = await client.query("SELECT * FROM schedule");
+    }
+
+    client.release();
+
+    // Return the fetched data
+    return NextResponse.json({ authenticated: true, schedules: result.rows }, { status: 200 });
+
+  } catch (error) {
+    console.error("Error verifying token or fetching data", error);
+    return NextResponse.json({ authenticated: false, message: 'Authentication failed or error fetching data' }, { status: 401 });
+  }
+};
 
 export const POST = async (req) => {
   try {

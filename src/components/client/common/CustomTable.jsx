@@ -18,33 +18,48 @@ const CustomTable = ({
     filters.find((filter) => filter.key === "search")?.value || "";
   console.log("Search Input:", searchInput);
 
-  const getFilteredData = (arr, searchInput) => {
+  const getFilteredData = (arr, searchInput, filters) => {
     if (!arr || !Array.isArray(arr)) {
       console.error("Invalid data array");
       return [];
     }
 
     const searchStr = searchInput ? searchInput.toLowerCase() : "";
-    console.log("Filtering with search input:", searchStr);
+    const selectedCategory = filters.find(
+      (filter) => filter.key === "category"
+    )?.value;
+    const selectedLevel = filters.find(
+      (filter) => filter.key === "level"
+    )?.value;
 
     return arr.filter((value) => {
       if (!value) return false;
 
-      const name = value.name ? value.name.toLowerCase() : "";
-      const days = value.days ? value.days.toString() : "";
-      const items = value.items ? value.items : [];
+      const idMatches = value.id
+        ? value.id.toString().includes(searchStr)
+        : false;
+      const courseTitleMatches = value.courseTitle
+        ? value.courseTitle.toLowerCase().includes(searchStr)
+        : false;
+      const categoryMatches =
+        selectedCategory && value.category
+          ? value.category === selectedCategory
+          : true;
+      const levelMatches =
+        selectedLevel && value.level ? value.level === selectedLevel : true;
 
-      const nameMatches = name.includes(searchStr);
-      const daysMatches = days.includes(searchStr);
-      const oneItemMatches = items.some((item) =>
-        item.toLowerCase().includes(searchStr)
+      // If a category is selected, only show items in that category
+      if (selectedCategory && value.category !== selectedCategory) {
+        return false;
+      }
+
+      return (
+        (idMatches || courseTitleMatches) && categoryMatches && levelMatches
       );
-
-      return nameMatches || daysMatches || oneItemMatches;
     });
   };
 
-  const filteredData = getFilteredData(data, searchInput);
+  const filteredData = getFilteredData(data, searchInput, filters);
 
   const totalItems = filteredData.length;
   const totalPages = Math.ceil(totalItems / pageSize);
@@ -61,7 +76,6 @@ const CustomTable = ({
 
   return (
     <div className="shadow-md sm:rounded-lg">
-      {/* Filters */}
       <div className="flex items-center justify-between flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900 px-4 py-2">
         {filters.map((filter, index) => (
           <div key={index}>
@@ -99,7 +113,6 @@ const CustomTable = ({
         ))}
       </div>
 
-      {/* Table */}
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -162,7 +175,9 @@ const CustomTable = ({
                           <li key={index}>
                             <button
                               onClick={() => {
-                                console.log(`Item clicked: ${menuItem.label} for ID: ${item.id}`);
+                                console.log(
+                                  `Item clicked: ${menuItem.label} for ID: ${item.id}`
+                                );
                                 menuItem.onClick(item.id)();
                               }}
                               className="block w-52 text-left px-4 py-2 m-2 rounded text-sm text-gray-700 hover:bg-primarygold hover:text-white"
@@ -182,7 +197,6 @@ const CustomTable = ({
         </tbody>
       </table>
 
-      {/* Pagination */}
       <div className="px-4 py-3 flex items-center justify-between bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 sm:px-6">
         <div className="flex-1 flex justify-between sm:hidden">
           <button
@@ -211,20 +225,35 @@ const CustomTable = ({
           </p>
 
           <nav
-            className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+            className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px ml-3"
             aria-label="Pagination"
           >
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-l-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Previous
             </button>
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              (page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                    page === currentPage
+                      ? "z-10 bg-blue-50 dark:bg-gray-700 border-blue-500 text-blue-600 dark:text-gray-300"
+                      : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  {page}
+                </button>
+              )
+            )}
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-r-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Next
             </button>

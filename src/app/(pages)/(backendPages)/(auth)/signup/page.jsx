@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import Image from "next/image";
 import AuthLayout from "@/components/client/common/Authlayout";
 import Link from "next/link";
 import { z } from "zod";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
+import Logo from "@/components/client/common/Logo";
 
 const signUpSchema = z.object({
   firstname: z.string().min(2, "First name must be at least 2 characters"),
@@ -17,7 +17,13 @@ const signUpSchema = z.object({
   password: z
     .string()
     .min(6, "Password must be at least 6 characters")
-    .regex(/(?=.*[0-9])(?=.*[a-zA-Z])/, "Password must contain special character, letters and numbers"),
+    .regex(
+      /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])/,
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    ),
+  role: z.enum(["user", "instructor"], {
+    required_error: "User type is required",
+  }),
 });
 
 export default function SignUp() {
@@ -25,9 +31,10 @@ export default function SignUp() {
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user"); // New state for user type
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
 
@@ -57,10 +64,11 @@ export default function SignUp() {
         lastname,
         email,
         password,
+        role,
       });
 
       if (!result.success) {
-        setError(result.error.errors.map((err) => err.message).join(", "));
+        setError(result.error.errors[0].message);
         setLoading(false);
         return;
       }
@@ -70,15 +78,19 @@ export default function SignUp() {
         lastname,
         email,
         password,
+        role,
       });
-
+      console.log(response.error);
       if (response.data.success) {
         router.push("/signin");
       } else {
-        setError("Sign-up failed");
+        setError(response.data.error || "Sign-up failed");
+        console.log(response.error);
+        
       }
     } catch (err) {
       setError("Sign-up failed");
+      
     } finally {
       setLoading(false);
     }
@@ -88,18 +100,8 @@ export default function SignUp() {
     <AuthLayout>
       <section>
         <div className="flex flex-col items-center justify-center">
-        <Link href="/">
-            <div className="flex items-center justify-center">
-              <Image
-                src="/images/pages/mainlogoo.png"
-                alt="alt"
-                width={100}
-                height={100}
-              />
-            </div>
-            <div className="text-2xl font-bold items-center text-goldlight">
-            <span>DIGNITY MEDICAL TRAINING</span>
-            </div>
+          <Link href="/">
+            <Logo />
           </Link>
         </div>
         <div>
@@ -108,6 +110,42 @@ export default function SignUp() {
               Sign up for an account
             </h1>
             <form className="space-y-4 md:space-y-6" onSubmit={handleSignUp}>
+              <div className="flex justify-evenly items-center">
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="user"
+                    name="role"
+                    value="user"
+                    checked={role === "user"}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label
+                    htmlFor="user"
+                    className="text-gray-700 dark:text-white"
+                  >
+                    User
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="instructor"
+                    name="role"
+                    value="instructor"
+                    checked={role === "instructor"}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label
+                    htmlFor="instructor"
+                    className="text-gray-700 dark:text-white"
+                  >
+                    Instructor
+                  </label>
+                </div>
+              </div>
               <div>
                 <input
                   type="text"
@@ -117,7 +155,6 @@ export default function SignUp() {
                   placeholder="First Name"
                   value={firstname}
                   onChange={(e) => setFirstname(e.target.value)}
-                  required
                 />
               </div>
               <div>
@@ -129,7 +166,6 @@ export default function SignUp() {
                   placeholder="Last Name"
                   value={lastname}
                   onChange={(e) => setLastname(e.target.value)}
-                  required
                 />
               </div>
               <div>
@@ -141,32 +177,27 @@ export default function SignUp() {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
                 />
               </div>
               <div className="relative">
                 <input
-                  type={showPassword ? "text" : "password"} // Toggle type based on showPassword state
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   id="password"
                   placeholder="Password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                  onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
                 >
-                  {showPassword ? (
-                   <FaEye/>
-                  ) : (
-                    <FaEyeSlash/>
-                  )}
+                  {showPassword ? <FaEye /> : <FaEyeSlash />}
                 </button>
               </div>
+
               <button
                 type="submit"
                 className="w-full btn-design-1"

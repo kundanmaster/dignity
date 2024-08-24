@@ -124,7 +124,7 @@ export const POST = async (req) => {
   } catch (error) {
     console.error("Error inserting user details:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: error },
       { status: 500 }
     );
   }

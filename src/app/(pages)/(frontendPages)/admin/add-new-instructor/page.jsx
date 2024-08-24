@@ -6,8 +6,8 @@ import Editor from "@/components/client/common/Editor";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 // import { useAuth } from "@/hooks/auth/authContext";
-
 
 const AddNewInstructor = () => {
   const tabs = [
@@ -17,7 +17,8 @@ const AddNewInstructor = () => {
     "Finish",
   ];
   // const { user } = useAuth();
-  const { router } = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -56,13 +57,17 @@ const AddNewInstructor = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       // Send formData to backend endpoint
       console.log(formData);
-      const response = await axios.post("/apiRoutes/manage-instructor", formData);
-      toast.success("Instructor added successfully");
-      console.log("Instructor added successfully:", response.data);
+      const response = await axios.post(
+        "/apiRoutes/manage-instructor",
+        formData
+      );
 
+      // Success handling
+      toast.success("Instructor added successfully");
       // Reset formData state
       setFormData({
         firstname: "",
@@ -76,14 +81,28 @@ const AddNewInstructor = () => {
         twitter: "",
       });
 
-      setLoading(false);
+      // Redirect to the manage instructor page
       router.push("/admin/manage-instructor");
-      // Optionally, you can redirect or show a success message
     } catch (error) {
-      toast.success("Error: Email already exists"); 
-      console.error("Error adding Instructor:", error);
       setLoading(false);
-      // Handle error, show error message, etc.
+      // Handle specific error
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.error.detail
+      ) {
+        // Check for duplicate email error
+        if (error.response.data.error.detail.includes("Key (email)")) {
+          toast.error("Email already exists. Please use a different email.");
+        } else {
+          // Handle other specific errors based on response details
+          toast.error(`An error occurred: ${error.response.data.detail}`);
+        }
+      } else {
+        // Handle network or other unexpected errors
+        toast.error("Error: Something went wrong");
+      }
+      console.error("Error adding Instructor:", error);
     }
   };
 
@@ -213,11 +232,35 @@ const AddNewInstructor = () => {
                       <input
                         className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         id="password"
+                        name="password"
                         placeholder="Enter password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         value={formData.password}
                         onChange={handleChange}
                       />
+                    </div>
+                  </div>
+                  <div className="md:flex md:items-center mb-6">
+                    <div className="md:w-1/3">
+                      <label
+                        className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                        htmlFor="password"
+                      ></label>
+                    </div>
+                    <div className="md:w-1/2">
+                      <input
+                        type="checkbox"
+                        id="show-password"
+                        checked={showPassword}
+                        onChange={() => setShowPassword(!showPassword)}
+                        className="mr-2"
+                      />
+                      <label
+                        htmlFor="show-password"
+                        className="text-sm text-gray-700 dark:text-gray-400"
+                      >
+                        Show Password
+                      </label>
                     </div>
                   </div>
                 </div>

@@ -84,6 +84,10 @@ const CoursesPage = () => {
     },
   ];
 
+
+  if (loading) return <p>Loading...</p>;
+
+  if (!enrollmentData) return <p>Course not found</p>;
   return (
     <DashboardLayout>
       <div className="text-2xl font-bold">Your Enrolled Course...</div>

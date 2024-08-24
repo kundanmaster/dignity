@@ -6,6 +6,7 @@ import AuthLayout from "@/components/client/common/Authlayout";
 import Link from "next/link";
 import { z } from "zod";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Logo from "@/components/client/common/Logo";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -47,17 +48,7 @@ export default function SignIn() {
       <section>
         <div className="flex flex-col items-center justify-center">
           <Link href="/">
-            <div className="flex items-center justify-center">
-              <Image
-                src="/images/pages/mainlogoo.png"
-                alt="alt"
-                width={100}
-                height={100}
-              />
-            </div>
-            <div className="text-2xl font-bold items-center text-goldlight">
-              <span>DIGNITY MEDICAL TRAINING</span>
-            </div>
+            <Logo/>
           </Link>
         </div>
 
@@ -76,7 +67,6 @@ export default function SignIn() {
                   placeholder="Enter email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
                 />
               </div>
               <div className="relative">
@@ -88,7 +78,6 @@ export default function SignIn() {
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
                 />
                 <button
                   type="button"

@@ -15,6 +15,8 @@ import {
   useDropdown,
   useUserDetails,
 } from "@/helpers/GeneralHelper";
+import Logo from "@/components/client/common/Logo"
+
 const Header = ({ token }) => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,15 +34,7 @@ const Header = ({ token }) => {
       <div className="flex justify-between items-center px-5 sm:px-10 md:px-16 xl:px-20">
         <div className="justify-between text-black text-2xl font-bold">
           <Link href="/">
-            <div className="text-2xl font-bold flex items-center text-goldlight">
-              <Image
-                src="/images/pages/mainlogoo.png"
-                alt="alt"
-                width={100}
-                height={100}
-              />
-              <span>DIGNITY MEDICAL TRAINING</span>
-            </div>
+          <Logo/>
           </Link>
         </div>
 

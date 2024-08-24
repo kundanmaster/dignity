@@ -56,6 +56,8 @@ export async function POST(req) {
       course_id,
       firstName,
       lastName,
+      instructor_id,
+      url,
       email,
       phoneNumber,
       address,
@@ -68,9 +70,9 @@ export async function POST(req) {
 
     const insertQuery = `
       INSERT INTO enrollment 
-      ( paypal_order_id, user_id, course_id, first_name, last_name, email, phone_number, address, additional_info, date_time, location, course_title, course_price, transaction_status, capture_id, create_time) 
+      ( paypal_order_id, user_id, course_id, first_name, last_name, instructor_id, url, email, phone_number, address, additional_info, date_time, location, course_title, course_price, transaction_status, capture_id, create_time) 
       VALUES 
-      ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, NOW()) 
+      ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, NOW()) 
       RETURNING id;
     `;
 
@@ -80,6 +82,8 @@ export async function POST(req) {
       course_id,
       firstName,
       lastName,
+      instructor_id,
+      url,
       email,
       phoneNumber,
       address,
@@ -109,65 +113,54 @@ export async function POST(req) {
 }
 // Adjust the import based on your project structure
 
+
 export async function GET(req) {
   const client = await pool.connect();
 
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
-    const urlId = url.pathname.split("/").pop(); // Get id from URL path if present
-    const queryUserId = url.searchParams.get("user_id"); // Get user_id from query parameters
-    console.log(queryUserId);
-    
-    const queryId = url.searchParams.get("id"); // Get id from query parameters
-    console.log(queryId);
-    
+    const userId = url.searchParams.get("user_id");
+    const id = url.searchParams.get("id");
+
     // Convert query parameters to integers if they are numbers
-    const userId = queryUserId && !isNaN(parseInt(queryUserId)) ? parseInt(queryUserId) : undefined;
-    const id = queryId && !isNaN(parseInt(queryId)) ? parseInt(queryId) : undefined;
+    const userIdInt = userId && !isNaN(parseInt(userId)) ? parseInt(userId) : undefined;
+    const idInt = id && !isNaN(parseInt(id)) ? parseInt(id) : undefined;
 
     // Simulate an admin check (replace with actual auth check)
     const isAdmin = true; // Set this condition to check if the user is an admin
 
-    // Ensure that at least one of user_id or id is provided if not admin
-    if (!isAdmin && !userId && !id) {
+    // Ensure at least one parameter is provided if not an admin
+    if (!isAdmin && !userIdInt && !idInt) {
       return NextResponse.json(
         { error: "Either user_id or id is required" },
         { status: 400 }
       );
     }
 
-    // Build the query conditionally based on available parameters
+    // Build query conditions based on parameters
     let queryConditions = [];
     let queryParams = [];
-    if (!isAdmin) { // Apply conditions only if the user is not an admin
-      if (userId) {
+    if (!isAdmin) {
+      if (userIdInt) {
         queryConditions.push(`e.user_id = $${queryParams.length + 1}`);
-        queryParams.push(userId);
+        queryParams.push(userIdInt);
       }
-      if (id) {
+      if (idInt) {
         queryConditions.push(`e.id = $${queryParams.length + 1}`);
-        queryParams.push(id);
+        queryParams.push(idInt);
       }
     }
 
-    const queryConditionString = queryConditions.length > 0 
-      ? `WHERE ${queryConditions.join(' OR ')}`
-      : '';
+    const queryConditionString = queryConditions.length > 0 ? `WHERE ${queryConditions.join(' OR ')}` : '';
 
-    // Fetch enrollment data based on conditions
+    // Construct query
     const query = `
-      SELECT DISTINCT ON (e.paypal_order_id)
-      e.*, s.instructor_id,
-      u.firstname AS instructor_first_name,
-      u.lastname AS instructor_last_name,
-      s.url As course_url
+      SELECT e.*, 
+        u.firstname AS instructor_first_name, 
+        u.lastname AS instructor_last_name
       FROM public.enrollment e
-      INNER JOIN public.schedule s
-      ON e.course_id = s.course_id
-      INNER JOIN public.users u
-      ON s.instructor_id = u.id
+      LEFT JOIN public.users u ON e.instructor_id = u.id
       ${queryConditionString}
-      ORDER BY e.paypal_order_id, e.create_time DESC;
     `;
 
     const result = await client.query(query, queryParams);

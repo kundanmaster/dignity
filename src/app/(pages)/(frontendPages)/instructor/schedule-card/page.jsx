@@ -111,7 +111,9 @@ const ScheduleCard = () => {
     });
 
     setErrors(newErrors);
-    return newErrors.every((fieldErrors) => Object.keys(fieldErrors).length === 0);
+    return newErrors.every(
+      (fieldErrors) => Object.keys(fieldErrors).length === 0
+    );
   };
 
   const handleSubmit = async () => {
@@ -160,6 +162,11 @@ const ScheduleCard = () => {
 
   return (
     <InstructorDashboardLayout>
+      <div className="flex justify-end pb-2">
+        <Link href="/instructor/view-schedule">
+          <button className="bg-goldlight hover:bg-primarygold text-white px-4 py-2 rounded-lg">View Schedule</button>{" "}
+        </Link>
+      </div>
       <div className="p-4 border rounded bg-white shadow w-full">
         <h2 className="text-2xl font-bold mb-4">
           Schedule your class{" "}
@@ -227,7 +234,9 @@ const ScheduleCard = () => {
                   required
                 />
                 {errors[index]?.time_to && (
-                  <p className="text-red-500 text-sm">{errors[index].time_to}</p>
+                  <p className="text-red-500 text-sm">
+                    {errors[index].time_to}
+                  </p>
                 )}
               </div>
               <div>
@@ -244,7 +253,9 @@ const ScheduleCard = () => {
                   required
                 />
                 {errors[index]?.time_from && (
-                  <p className="text-red-500 text-sm">{errors[index].time_from}</p>
+                  <p className="text-red-500 text-sm">
+                    {errors[index].time_from}
+                  </p>
                 )}
               </div>
               <div>
@@ -264,7 +275,9 @@ const ScheduleCard = () => {
                   <ClipLoader size={20} color={"#F27B21"} />
                 )}
                 {errors[index]?.courseID && (
-                  <p className="text-red-500 text-sm">{errors[index].courseID}</p>
+                  <p className="text-red-500 text-sm">
+                    {errors[index].courseID}
+                  </p>
                 )}
               </div>
             </div>
@@ -282,8 +295,8 @@ const ScheduleCard = () => {
                 placeholder="Enter the URL"
               />
               {errors[index]?.url && (
-                  <p className="text-red-500 text-sm">{errors[index].url}</p>
-                )}
+                <p className="text-red-500 text-sm">{errors[index].url}</p>
+              )}
             </div>
           </div>
         ))}

@@ -111,11 +111,11 @@ export const InstructorData = [
   //   icon: <IoBarChart />,
   //   href: '/instructor/sales-report',
   // },
-  // {
-  //   label: 'Payout report',
-  //   icon: <TbReportMoney />,
-  //   href: '/instructor/payout-report',
-  // },
+  {
+    label: 'Enroll Class',
+    icon: <TbReportMoney />,
+    href: '/instructor/enroll-class',
+  },
   
   {
     label: 'Messages',

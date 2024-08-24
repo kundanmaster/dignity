@@ -31,7 +31,7 @@ const CourseCard = ({ course, onAddToCart, onEnroll }) => {
           <h5 className="block mb-2 text-xl antialiased font-bold leading-snug tracking-normal text-goldlight">
             {course.course_title}
           </h5>
-          <p className="font-sans text-base antialiased font-light leading-relaxed text-inherit line-clamp-4">
+          <p className="text-gray-400 text-base antialiased font-light leading-relaxed text-inherit line-clamp-4">
             {stripHtmlTags(course.description)}
           </p>
         </div>

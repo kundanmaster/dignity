@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 
 const fetchCourseDetails = async (id) => {
   try {
-    const response = await axios.get(`/apiRoutes/paypalcaptureorder?id=${id}`);
+    const response = await axios.get(`/apiRoutes/enrollwithid?id=${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching course details:", error);
@@ -29,9 +29,10 @@ const CoursesPage = () => {
       setLoading(false);
     };
 
+
     getCourseDetails();
   }, [id]);
-
+console.log(course);
   if (loading) return <p>Loading...</p>;
 
   if (!course) return <p>Course not found</p>;
@@ -54,38 +55,38 @@ const CoursesPage = () => {
         </div>
 
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-4">{course[0].capture_id}</h2>
+          <h2 className="text-2xl font-bold mb-4">Course Title: {course[0].course_title}</h2>
           <p className="text-lg mb-4">{course[0].description}</p>
+          <p className="text-sm text-gray-600 mb-4">
+            Purchase Id: {course[0].capture_id}
+          </p>
           <p className="text-sm text-gray-600 mb-2">
             Instructor: {course[0].instructor_first_name} {course[0].instructor_last_name}
           </p>
           <p className="text-sm text-gray-600 mb-4">
-            Course Title: {course[0].course_title}
-          </p>
-          <p className="text-sm text-gray-600 mb-4">
             Start Date: {course[0].date_time}
           </p>
-          <p className="text-lg font-semibold mb-4">
+          {/* <p className="text-lg font-semibold mb-4">
             Price: ${course[0].course_price}
-          </p>
+          </p> */}
 
           <div className="flex justify-between items-center">
             <Link target="_blank"
             // https://meet.google.com/erv-qmrf-aiy
-              href={`${course[0].course_url}`}
+              href={`${course[0].url}`}
               className="bg-primarygold text-white px-6 py-2 rounded-lg hover:bg-goldlight hover:text-white transition-colors"
             >
-              Start Class
+              Join Class
             </Link>
          
             <Link href={'/user/courses'} className="bg-primarygold text-white px-6 py-2 rounded-lg hover:bg-goldlight hover:text-white transition-colors">
-                Go To Course
+                Go To My Course
             </Link>
 
     
             {user?.role === "admin" && (
               <Link 
-                href={`/admin/edit/${course[0].course_url}`}
+                href={`/admin/edit/${course[0].url}`}
                 className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors"
               >
                 Edit Course

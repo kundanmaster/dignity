@@ -8,6 +8,7 @@ import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import Logo from "@/components/client/common/Logo";
 
 // Define the validation schema
 const forgotPasswordSchema = z.object({
@@ -47,17 +48,7 @@ const ForgotPassword = () => {
       <section>
         <div className="flex flex-col items-center justify-center">
           <Link href="/">
-            <div className="flex items-center justify-center">
-              <Image
-                src="/images/pages/mainlogoo.png"
-                alt="Logo"
-                width={100}
-                height={100}
-              />
-            </div>
-            <div className="text-2xl font-bold items-center text-goldlight">
-              <span>DIGNITY MEDICAL TRAINING</span>
-            </div>
+            <Logo />
           </Link>
         </div>
 

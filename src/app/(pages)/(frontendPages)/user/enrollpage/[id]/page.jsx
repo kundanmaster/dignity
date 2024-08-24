@@ -34,7 +34,7 @@ const getUser = async (id) => {
 
 const getScheduleCourse = async (id) => {
   try {
-    const response = await fetch(`/apiRoutes/schedule?id=${id}`);
+    const response = await fetch(`/apiRoutes/schedule?course_id=${id}`);
     if (!response.ok) throw new Error("Failed to fetch");
     return await response.json();
   } catch (error) {
@@ -112,7 +112,7 @@ const EnrollPage = ({ params }) => {
     };
     fetchSchedule();
   }, [params.id]);
-
+  
   const handleSubmit = async (values, { setSubmitting }) => {
     setSubmitting(true);
     setShowPayPal(true);
@@ -122,6 +122,8 @@ const EnrollPage = ({ params }) => {
       course_id: courseData?.courses[0]?.id,
       firstName: user?.firstname,
       lastName: user?.lastname,
+      instructor_id: scheduleData[0]?.instructor_id,
+      url: scheduleData[0]?.url,
       email: user?.email,
       phoneNumber: values.phoneNumber,
       address: values.address,

@@ -6,7 +6,7 @@ import { MdArrowForwardIos } from "react-icons/md";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/hooks/auth/authContext";
-
+import Logo from "@/components/client/common/Logo"
 const useDropdown = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
@@ -90,15 +90,7 @@ const AdminDashboardLayout = ({ children }) => {
       <nav className="backdrop-blur-xl bg-white p-4 flex items-center justify-between shadow-md">
         <div className="justify-between text-black text-2xl font-bold">
           <Link href="/admin/dashboard">
-            <div className="text-2xl font-bold flex items-center text-goldlight">
-              <Image
-                src="/images/pages/mainlogoo.png"
-                alt="alt"
-                width={100}
-                height={100}
-              />
-              <span>DIGNITY MEDICAL TRAINING</span>
-            </div>
+            <Logo/>
           </Link>
         </div>
 
