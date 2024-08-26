@@ -15,7 +15,8 @@ export async function POST(req) {
     const { amount, currency, enrollmentData } = await req.json();
 
     // Ensure that the origin is set; otherwise, use a fallback URL
-    const origin = req.headers.origin || "https://dignity-sand.vercel.app/";
+    const origin = req.headers.origin || "https://dignity-sand.vercel.app";
+    // const origin = req.headers.origin || "https://localhost:3000";
 
     // Create a Stripe Checkout session
     const session = await stripe.checkout.sessions.create({
@@ -33,9 +34,9 @@ export async function POST(req) {
         },
       ],
       mode: "payment",
-    //   success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,      
+    //   success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
     //   success_url: `http://localhost:3000/stripe-success?amount={amount}`,
-      success_url: `https://dignity-sand.vercel.app/stripe-success?amount=${amount}`,
+      success_url: `${origin}/stripe-success?amount=${amount/100}`,
       cancel_url: `${origin}/`,
       metadata: enrollmentData, // Attach additional data to the session
     });

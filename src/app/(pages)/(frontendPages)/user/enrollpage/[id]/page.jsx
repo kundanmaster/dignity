@@ -177,7 +177,7 @@ const EnrollPage = ({ params }) => {
         sessionStorage.getItem("enrollmentData")
       );
       const response = await axios.post("/apiRoutes/stripecheckout", {
-        amount: enrollmentData.course_price, // Stripe expects amount in cents
+        amount: enrollmentData.course_price * 100, // Stripe expects amount in cents
         currency: "usd",
         enrollmentData: enrollmentData, // Include necessary metadata
       });
