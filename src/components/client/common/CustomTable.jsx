@@ -16,7 +16,6 @@ const CustomTable = ({
 
   const searchInput =
     filters.find((filter) => filter.key === "search")?.value || "";
-  console.log("Search Input:", searchInput);
 
   const getFilteredData = (arr, searchInput, filters) => {
     if (!arr || !Array.isArray(arr)) {
@@ -24,7 +23,7 @@ const CustomTable = ({
       return [];
     }
 
-    const searchStr = searchInput ? searchInput.toLowerCase() : "";
+    const searchStr = searchInput.toLowerCase();
     const selectedCategory = filters.find(
       (filter) => filter.key === "category"
     )?.value;
@@ -32,29 +31,31 @@ const CustomTable = ({
       (filter) => filter.key === "level"
     )?.value;
 
-    return arr.filter((value) => {
-      if (!value) return false;
+    return arr.filter((item) => {
+      if (!item) return false;
 
-      const idMatches = value.id
-        ? value.id.toString().includes(searchStr)
+      const idMatches = item.id
+        ? item.id.toString().includes(searchStr)
         : false;
-      const courseTitleMatches = value.courseTitle
-        ? value.courseTitle.toLowerCase().includes(searchStr)
+      const firstnameMatches = item.firstname
+        ? item.firstname.toLowerCase().includes(searchStr)
         : false;
-      const categoryMatches =
-        selectedCategory && value.category
-          ? value.category === selectedCategory
-          : true;
-      const levelMatches =
-        selectedLevel && value.level ? value.level === selectedLevel : true;
+      const lastnameMatches = item.lastname
+        ? item.lastname.toLowerCase().includes(searchStr)
+        : false;
+      const emailMatches = item.email
+        ? item.email.toLowerCase().includes(searchStr)
+        : false;
 
-      // If a category is selected, only show items in that category
-      if (selectedCategory && value.category !== selectedCategory) {
-        return false;
-      }
+      const categoryMatches = selectedCategory
+        ? item.category === selectedCategory
+        : true;
+      const levelMatches = selectedLevel ? item.level === selectedLevel : true;
 
       return (
-        (idMatches || courseTitleMatches) && categoryMatches && levelMatches
+        (idMatches || firstnameMatches || lastnameMatches || emailMatches) &&
+        categoryMatches &&
+        levelMatches
       );
     });
   };
@@ -155,39 +156,41 @@ const CustomTable = ({
                       e.stopPropagation(); // Prevents click from bubbling up
                       toggleMenu(item.id);
                     }}
-                    className="text-goldlight  border-2 border-goldlight hover:text-primarygold p-2 rounded-xl"
+                    className="text-goldlight border-2 border-goldlight hover:text-primarygold p-2 rounded-xl"
                   >
                     <PiDotsThreeOutlineVerticalDuotone />
                   </button>
 
                   {openDropdownId === item.id && (
-                    <div
-                      className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
-                      onClick={(e) => e.stopPropagation()} // Prevents clicks from closing the menu
-                    >
-                      <ul
-                        className="py-1"
-                        role="menu"
-                        aria-orientation="vertical"
-                        aria-labelledby="options-menu"
+                    <div className="bg-slate-300 w-full h-full">
+                      <div
+                        className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+                        onClick={(e) => e.stopPropagation()} // Prevents clicks from closing the menu
                       >
-                        {items.map((menuItem, index) => (
-                          <li key={index}>
-                            <button
-                              onClick={() => {
-                                console.log(
-                                  `Item clicked: ${menuItem.label} for ID: ${item.id}`
-                                );
-                                menuItem.onClick(item.id)();
-                              }}
-                              className="block w-52 text-left px-4 py-2 m-2 rounded text-sm text-gray-700 hover:bg-primarygold hover:text-white"
-                              role="menuitem"
-                            >
-                              {menuItem.label}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
+                        <ul
+                          className="py-1"
+                          role="menu"
+                          aria-orientation="vertical"
+                          aria-labelledby="options-menu"
+                        >
+                          {items.map((menuItem, index) => (
+                            <li key={index}>
+                              <button
+                                onClick={() => {
+                                  console.log(
+                                    `Item clicked: ${menuItem.label} for ID: ${item.id}`
+                                  );
+                                  menuItem.onClick(item.id)();
+                                }}
+                                className="block w-52 text-left px-4 py-2 m-2 rounded text-sm text-gray-700 hover:bg-primarygold hover:text-white"
+                                role="menuitem"
+                              >
+                                {menuItem.label}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   )}
                 </div>

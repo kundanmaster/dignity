@@ -4,9 +4,22 @@ import bcrypt from 'bcrypt';
 
 export const POST = async (request) => {
   const body = await request.json();
-  const { firstname, lastname, email, password, role } = body;
+  const {
+    firstname,
+    lastname,
+    email,
+    password,
+    role,
+    degrees,
+    identityProof,
+    onlineTeachingExperience,
+    specialtyAreas,
+    teachingPhilosophy,
+    verified
+  } = body;
 
-  if (!firstname || !email || !password) {
+  // Validate required fields
+  if (!firstname || !lastname || !email || !password || !role) {
     return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
   }
 
@@ -25,9 +38,23 @@ export const POST = async (request) => {
 
     // Hash the password and insert the new user
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const insertResult = await client.query(
-      'INSERT INTO users (firstname, lastname, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-      [firstname, lastname, email, hashedPassword, role]
+      `INSERT INTO users (firstname, lastname, email, password, role, degrees, identityProof, onlineTeachingExperience, specialtyAreas, teachingPhilosophy, verified) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id`,
+      [
+        firstname,
+        lastname,
+        email,
+        hashedPassword,
+        role,
+        degrees,
+        identityProof,
+        onlineTeachingExperience,
+        specialtyAreas,
+        teachingPhilosophy,
+        verified
+      ]
     );
 
     return NextResponse.json({ success: true, userId: insertResult.rows[0].id }, { status: 201 });

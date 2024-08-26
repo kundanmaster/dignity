@@ -8,6 +8,8 @@ import {
   FaCcVisa,
   FaCcAmex,
   FaCcDiscover,
+  FaStripeS,
+  FaStripe,
 } from "react-icons/fa";
 import { useAuth } from "@/hooks/auth/authContext";
 import { IoHome } from "react-icons/io5";
@@ -15,11 +17,17 @@ import Link from "next/link";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
 
 const initialOptions = {
   "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
   currency: "USD",
 };
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 
 const getUser = async (id) => {
   try {
@@ -112,7 +120,7 @@ const EnrollPage = ({ params }) => {
     };
     fetchSchedule();
   }, [params.id]);
-  
+
   const handleSubmit = async (values, { setSubmitting }) => {
     setSubmitting(true);
     setShowPayPal(true);
@@ -160,6 +168,26 @@ const EnrollPage = ({ params }) => {
     } catch (error) {
       console.error("Capture Order Error:", error);
       toast.error("Failed to capture PayPal payment.");
+    }
+  };
+  // Payment with Stripe
+  const handleCheckout = async () => {
+    try {
+      const enrollmentData = JSON.parse(
+        sessionStorage.getItem("enrollmentData")
+      );
+      const response = await axios.post("/apiRoutes/stripecheckout", {
+        amount: enrollmentData.course_price * 100, // Stripe expects amount in cents
+        currency: "usd",
+        enrollmentData: enrollmentData, // Include necessary metadata
+      });
+
+      const { sessionId } = response.data;
+      const stripe = await stripePromise;
+      await stripe.redirectToCheckout({ sessionId });
+    } catch (error) {
+      console.error("Error creating checkout session", error);
+      toast.error("Failed to initiate Stripe checkout.");
     }
   };
 
@@ -343,20 +371,20 @@ const EnrollPage = ({ params }) => {
                       </span>
                     </div>
                     {submitVisible && (
-                <div className="flex justify-center">
-                  <button
-                    type="submit"
-                    className={`bg-goldlight text-white py-2 px-4 rounded hover:bg-primarygold ${
-                      !isValid || !dirty || isSubmitting
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
-                    disabled={!isValid || !dirty || isSubmitting}
-                  >
-                    Submit
-                  </button>
-                </div>
-              )}
+                      <div className="flex justify-center">
+                        <button
+                          type="submit"
+                          className={`bg-goldlight text-white py-2 px-4 rounded hover:bg-primarygold ${
+                            !isValid || !dirty || isSubmitting
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }`}
+                          disabled={!isValid || !dirty || isSubmitting}
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    )}
                     {/* <div>
                       <button
                         type="submit"
@@ -374,28 +402,45 @@ const EnrollPage = ({ params }) => {
                 </div>
                 <div className="flex justify-center items-center mt-2">
                   {showPayPal && (
-                    <div className="mt-6">
-                      <PayPalScriptProvider options={initialOptions}>
-                        <PayPalButtons
-                          createOrder={(data, actions) => {
-                            return actions.order.create({
-                              purchase_units: [
-                                {
-                                  amount: {
-                                    value: courseData?.courses[0]?.course_price,
-                                  },
-                                },
-                              ],
-                            });
-                          }}
-                          onApprove={onApprove}
-                          onError={(error) => {
-                            console.error("PayPal Button Error:", error);
-                            toast.error("Failed to complete PayPal payment.");
-                          }}
-                        />
-                      </PayPalScriptProvider>
-                    </div>
+                    <>
+                      <div className="justify-center items-center ">
+                        <div className="mt-6">
+                          <PayPalScriptProvider options={initialOptions}>
+                            <PayPalButtons
+                              createOrder={(data, actions) => {
+                                return actions.order.create({
+                                  purchase_units: [
+                                    {
+                                      amount: {
+                                        value:
+                                          courseData?.courses[0]?.course_price,
+                                      },
+                                    },
+                                  ],
+                                });
+                              }}
+                              onApprove={onApprove}
+                              onError={(error) => {
+                                console.error("PayPal Button Error:", error);
+                                toast.error(
+                                  "Failed to complete PayPal payment."
+                                );
+                              }}
+                            />
+                          </PayPalScriptProvider>
+                        </div>
+                        <div className="mt-4 flex justify-center">
+                          <button
+                            onClick={handleCheckout}
+                            className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded"
+                          >
+                            <span className="pl-2">
+                              <FaStripe size={64} />
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </>
                   )}
                 </div>
               </Form>
@@ -418,5 +463,3 @@ const EnrollPage = ({ params }) => {
 };
 
 export default EnrollPage;
-
-

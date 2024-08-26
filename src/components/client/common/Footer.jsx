@@ -127,12 +127,12 @@ const Footer = () => {
               <div className="flex items-center">
                 <FaPhoneAlt className="mr-2" />
                 <a href="tel:+1 (480)-351-2333" className="hover:underline">
-                  (Español) +1 (480)-351-2333
+                  +1 (480)-351-2333
                 </a>
               </div>
               <div className="flex items-center">
                 <FaMapMarkerAlt className="mr-2" />
-                <p>3200 N. Dobson Rd, Suite F7, Chandler, AZ 85224</p>
+                <p>45720 W Tucker Rd, Maricopa, AZ 85139</p>
               </div>
             </div>
           </div>

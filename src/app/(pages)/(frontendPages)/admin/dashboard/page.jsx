@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import React from "react";
-import AdminDashboardLayout from '@/components/server/admin/dashboard/AdminDashboardLayout'
+import AdminDashboardLayout from "@/components/server/admin/dashboard/AdminDashboardLayout";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -12,6 +12,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import Link from "next/link";
 
 ChartJS.register(
   CategoryScale,
@@ -59,31 +60,39 @@ const Dashboard = () => {
 
   return (
     <>
-    <AdminDashboardLayout>
-      <div className="p-4 bg-white rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Monthly Revenue</h2>
-        <div className="w-full" style={{ height: "400px" }}>
-          <Line data={data} options={options} />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
-        {cardsData.map((card, index) => (
-          <div
-            key={index}
-            className="relative flex flex-col bg-clip-border rounded-xl bg-gradient-to-tr from-black/65 to-black/95 border-black/80 text-white shadow-gray-900/20 shadow-md p-8"
-          >
-            <div className="text-center text-gray-700">
-              <p className="block font-sans text-sm antialiased font-normal leading-normal text-primarygold uppercase">
-                {card.label}
-              </p>
-              <h1 className="flex justify-center gap-1 mt-6 font-sans antialiased font-normal tracking-normal text-white text-3xl">
-                <span className="">{card.value}</span>
-              </h1>
-            </div>
+      <AdminDashboardLayout>
+        <div className="flex-grow p-4 overflow-y-auto">
+          <div className="bg-white p-4 mb-4 shadow-md rounded-md">
+            <Link href="/admin/instructor-request">
+              <button className="text-white bg-goldlight hover:bg-primarygold p-2 rounded shadow-sm hover:shadow-md">Unverified Instructor request</button>
+            </Link>
           </div>
-        ))}
-      </div>
+        </div>
+
+        <div className="p-4 bg-white rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4">Monthly Revenue</h2>
+          <div className="w-full" style={{ height: "400px" }}>
+            <Line data={data} options={options} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
+          {cardsData.map((card, index) => (
+            <div
+              key={index}
+              className="relative flex flex-col bg-clip-border rounded-xl bg-gradient-to-tr from-black/65 to-black/95 border-black/80 text-white shadow-gray-900/20 shadow-md p-8"
+            >
+              <div className="text-center text-gray-700">
+                <p className="block font-sans text-sm antialiased font-normal leading-normal text-primarygold uppercase">
+                  {card.label}
+                </p>
+                <h1 className="flex justify-center gap-1 mt-6 font-sans antialiased font-normal tracking-normal text-white text-3xl">
+                  <span className="">{card.value}</span>
+                </h1>
+              </div>
+            </div>
+          ))}
+        </div>
       </AdminDashboardLayout>
     </>
   );

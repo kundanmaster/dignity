@@ -25,6 +25,8 @@ const ScheduleCard = () => {
   const [courseDetails, setCourseDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [showModal, setShowModal] = useState(false);
+  const [modalAction, setModalAction] = useState(null);
   const [errors, setErrors] = useState([]); // State to track validation errors
 
   useEffect(() => {
@@ -126,7 +128,7 @@ const ScheduleCard = () => {
       });
       if (response.data.success) {
         toast.success("Schedule saved successfully");
-        console.log("Schedules saved successfully:", response.data.schedule);
+        console.log("Schedules saved successfully");
       } else {
         toast.error("Error saving schedules");
         console.error("Error saving schedules:", response.data.error);
@@ -136,7 +138,7 @@ const ScheduleCard = () => {
       console.error("Error submitting schedules:", error);
     } finally {
       setLoading(false);
-      setIsModalOpen(false); // Close modal after submission
+      closeModal(); // Close modal after submission
     }
   };
 
@@ -154,17 +156,30 @@ const ScheduleCard = () => {
 
   const handleFormSubmit = () => {
     if (validateFields()) {
-      setIsModalOpen(true); // Open modal if validation passes
+      setModalAction("submit"); // Set action to submit
+      setShowModal(true); // Open modal if validation passes
     } else {
       toast.error("Please fill in all required fields");
     }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setModalAction(null);
+  };
+
+  const handleConfirm = () => {
+    if (modalAction === "submit") {
+      handleSubmit(); // Submit form if confirmed
+    }
+    closeModal();
   };
 
   return (
     <InstructorDashboardLayout>
       <div className="flex justify-end pb-2">
         <Link href="/instructor/view-schedule">
-          <button className="bg-goldlight hover:bg-primarygold text-white px-4 py-2 rounded-lg">View Schedule</button>{" "}
+          <button className="bg-goldlight hover:bg-primarygold text-white px-4 py-2 rounded-lg">View Schedule</button>
         </Link>
       </div>
       <div className="p-4 border rounded bg-white shadow w-full">
@@ -315,11 +330,14 @@ const ScheduleCard = () => {
             Submit
           </button>
         </div>
-
         <ConfirmModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onConfirm={handleSubmit}
+          isOpen={showModal}
+          onClose={closeModal}
+          onConfirm={handleConfirm}
+          title={modalAction === "submit" ? "Confirm Submission" : "Confirm Action"}
+          message={modalAction === "submit" ? "Are you sure you want to submit the schedule?" : "Are you sure you want to proceed?"}
+          confirmLabel="Yes, Submit"
+          cancelLabel="No, Cancel"
         />
       </div>
     </InstructorDashboardLayout>

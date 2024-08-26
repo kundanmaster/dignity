@@ -8,42 +8,42 @@ const Instructor = () => {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="grid grid-cols-2 gap-4">
             <Image
-              src="/images/pages/at12.png"
+              src="/images/pages/allcourse (5).jpeg"
               alt="Training 1"
               width={500}
               height={500}
               className="rounded-lg shadow-md object-cover h-40 w-80"
             />
             <Image
-              src="/images/pages/at13.png"
+              src="/images/pages/allcourse (2).jpeg"
               alt="Training 2"
               width={500}
               height={500}
               className="rounded-lg shadow-md object-cover h-40 w-56"
             />
             <Image
-              src="/images/pages/at14.png"
+              src="/images/pages/allcourse (3).jpeg"
               alt="Training 3"
               width={500}
               height={500}
               className="rounded-lg shadow-md object-cover h-40 w-80"
             />
             <Image
-              src="/images/pages/at15.png"
+              src="/images/pages/allcourse (4).jpeg"
               alt="Training 4"
               width={500}
               height={500}
               className="rounded-lg shadow-md object-cover h-40 w-56"
             />
             <Image
-              src="/images/pages/at12.png"
+              src="/images/pages/allcourse (5).jpeg"
               alt="Training 5"
               width={500}
               height={500}
               className="rounded-lg shadow-md object-cover col-span-2 h-40 w-[34rem]"
             />
             <Image
-              src="/images/pages/at11.png"
+              src="/images/pages/allcourse (1).jpg"
               alt="Training 6"
               width={500}
               height={500}
@@ -106,7 +106,7 @@ const Instructor = () => {
             {/* Image Section */}
             <div className="relative md:w-3/5">
               <Image
-                src="/images/pages/mission.png"
+                src="/images/pages/mission.jpg"
                 alt="Mission"
                 layout="fill"
                 objectFit="cover"

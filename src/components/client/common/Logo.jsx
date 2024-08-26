@@ -6,12 +6,13 @@ const Logo = () => {
     <div>
       <div className="text-2xl font-bold flex items-center text-goldlight">
         <Image
-          src="/images/pages/mainlogoo.png"
+          src="/images/pages/lolo.png"
           alt="alt"
-          width={150}
-          height={150}
+          width={80}
+          height={80}
+          className="pr-4"
         />
-        <span className="hidden sm:inline text-center">
+        <span className="hidden sm:inline text-center text-nowrap">
           DIGNITY MEDICAL TRAINING <br />
           <span className="text-lg">
             <span className="text-primarygold">Enriching Minds,</span> Building

@@ -131,7 +131,7 @@ const Header = ({ token }) => {
             </Link>
           </div>
           <div className="flex items-center space-x-6">
-            <nav className="hidden md:flex items-center space-x-6 font-semibold text-base">
+            <nav className="hidden md:flex items-center space-x-6 font-semibold text-sm text-nowrap">
               <div className="group relative">
                 <a
                   href="#allcourse"

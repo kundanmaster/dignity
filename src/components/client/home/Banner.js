@@ -189,7 +189,7 @@ const Banner = () => {
             </div>
             <div className="md:w-1/2 mt-8 md:mt-0 flex justify-end">
               <Image
-                src="/images/pages/at1.png"
+                src="/images/pages/enroll timing now.jpg"
                 alt="Training"
                 width={600}
                 height={200}

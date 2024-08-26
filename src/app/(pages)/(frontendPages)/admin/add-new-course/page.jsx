@@ -5,9 +5,10 @@ import Editor from "@/components/client/common/Editor";
 import ThumbnailCarousel from "@/components/client/common/ThumbnailCarousel";
 import AdminDashboardLayout from "@/components/server/admin/dashboard/AdminDashboardLayout";
 import axios from "axios";
-import dynamic from "next/dynamic"; 
+import dynamic from "next/dynamic";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
+import { z } from "zod";
 const SearchableSelect = dynamic(
   () => import("@/components/client/common/SearchableSelect"),
   {
@@ -15,10 +16,35 @@ const SearchableSelect = dynamic(
   }
 );
 
+const courseSchema = z.object({
+  courseTitle: z.string().min(1, "Course title is required."),
+  shortDescription: z.string().optional(),
+  description: z.string().optional(),
+  selectedProgrammingLanguage: z.string().nullable(),
+  selectedProgrammingLevel: z.string().nullable(),
+  selectedLanguage: z.string().nullable(),
+  faq: z.string().optional(),
+  requirements: z.string().optional(),
+  isFreeCourse: z.boolean(),
+  coursePrice: z.string().optional(),
+  hasDiscount: z.boolean(),
+  discountedPrice: z.string().optional(),
+  courseOverviewProvider: z.string().nullable(),
+  coursetype: z.string().nullable(),
+  courseOverviewUrl: z.string().optional(),
+  metaKeywords: z.string().optional(),
+  metaDescription: z.string().optional(),
+  lesson: z.string().optional(),
+  section: z.string().optional(),
+  status: z.string().optional(),
+  thumbnail: z.string().optional(),
+});
+
 const AddNewCourse = () => {
   const tabs = ["Basic", "Info", "Price", "Media", "SEO", "Finished"];
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const router = useRouter();
   const { id } = useParams();
   console.log(id);
@@ -38,6 +64,7 @@ const AddNewCourse = () => {
     hasDiscount: false,
     discountedPrice: "",
     courseOverviewProvider: null,
+    coursetype: null,
     courseOverviewUrl: "",
     metaKeywords: "",
     metaDescription: "",
@@ -94,12 +121,29 @@ const AddNewCourse = () => {
     { label: "Html5", value: "html5", category: "provider" },
   ]; // Replace with your actual data
 
+  const coursetype = [
+    { label: "Zoom Classes", value: "zoom_classes", category: "coursetype" },
+    {
+      label: "Online Classes",
+      value: "online_classes",
+      category: "coursetype",
+    },
+    {
+      label: "Online Self Paced",
+      value: "online_self_paced",
+      category: "coursetype",
+    },
+  ];
   // Handle form input changes
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
       [id]: value,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: undefined,
     }));
   };
 
@@ -143,21 +187,33 @@ const AddNewCourse = () => {
           courseOverviewProvider: selectedValue,
         });
         break;
+      case "coursetype":
+        setFormData({
+          ...formData,
+          coursetype: selectedValue,
+        });
+        break;
       default:
         break;
     }
 
     console.log("Selected value:", selectedValue); // Log the selected value only
   };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      // Send formData to backend endpoint
-      console.log(formData);
-      const response = await axios.post("/apiRoutes/addcourse", formData);
-      toast.success("Course added successfully")
+      // Validate formData using the zod schema
+      const validatedData = courseSchema.parse(formData);
+      // Clear previous errors if validation is successful
+      setErrors({});
+      // Send validated data to backend endpoint
+      console.log(validatedData);
+      const response = await axios.post("/apiRoutes/addcourses", validatedData);
+      toast.success("Course added successfully");
       console.log("Course added successfully:", response.data);
 
       // Reset formData state
@@ -175,6 +231,7 @@ const AddNewCourse = () => {
         hasDiscount: false,
         discountedPrice: "",
         courseOverviewProvider: null,
+        coursetype: null,
         courseOverviewUrl: "",
         metaKeywords: "",
         metaDescription: "",
@@ -186,12 +243,22 @@ const AddNewCourse = () => {
 
       setLoading(false);
       router.push("/admin/manage-courses");
-      // Optionally, you can redirect or show a success message
     } catch (error) {
-      toast.error("Error adding course")
-      console.error("Error adding course:", error);
+      if (error instanceof z.ZodError) {
+        // Set errors from validation failure
+        const errorMessages = error.errors.reduce((acc, err) => {
+          acc[err.path[0]] = err.message;
+          return acc;
+        }, {});
+        setErrors(errorMessages);
+        toast.error("Validation failed. Please check your input.");
+        console.error("Validation errors:", error.errors);
+      } else {
+        // Handle other errors
+        toast.error("Error adding course");
+        console.error("Error adding course:", error);
+      }
       setLoading(false);
-      // Handle error, show error message, etc.
     }
   };
 
@@ -214,13 +281,20 @@ const AddNewCourse = () => {
                 </div>
                 <div className="md:w-1/2">
                   <input
-                    className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className={`block w-full p-2 text-gray-900 border ${
+                      errors.courseTitle ? "border-red-500" : "border-gray-300"
+                    } rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                     id="courseTitle"
                     placeholder="Enter the title"
                     type="text"
                     value={formData.courseTitle}
                     onChange={handleInputChange}
                   />
+                  {errors.courseTitle && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.courseTitle}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -572,6 +646,24 @@ const AddNewCourse = () => {
                   />
                 </div>
               </div>
+              <div className="md:flex md:items-center mb-6">
+                <div className="md:w-1/3">
+                  <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+                    Course Overview Provider
+                  </label>
+                </div>
+                <div className="md:w-1/2">
+                  <SearchableSelect
+                    options={coursetype}
+                    onSelect={(value) =>
+                      handleSelectChange(value, "coursetype")
+                    }
+                    defaultValue={coursetype.find(
+                      (option) => option.value === formData.coursetype
+                    )}
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -626,7 +718,7 @@ const AddNewCourse = () => {
           <div>
             <div className="container mx-auto p-4">
               <p className="text-lg text-center font-semibold text-gray-700 mb-4">
-              Congratulations! You are one click away to add new course.
+                Congratulations! You are one click away to add new course.
               </p>
               {/* Display summary of entered data */}
               <div className="text-center">

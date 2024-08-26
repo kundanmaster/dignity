@@ -9,32 +9,32 @@ const TrainingCenter = () => {
 
   const instructors = [
     {
-      src: "/images/pages/at11.png",
+      src: "/images/pages/instructor (1).jpg",
       name: "Instructor 1",
       bio: "Bio for Instructor 1",
     },
     {
-      src: "/images/pages/at7.png",
+      src: "/images/pages/instructor (2).jpg",
       name: "Instructor 2",
       bio: "Bio for Instructor 2",
     },
     {
-      src: "/images/pages/at8.png",
+      src: "/images/pages/instructor (3).jpg",
       name: "Instructor 3",
       bio: "Bio for Instructor 3",
     },
     {
-      src: "/images/pages/at10.png",
+      src: "/images/pages/instructor (4).jpg",
       name: "Instructor 4",
       bio: "Bio for Instructor 4",
     },
     {
-      src: "/images/pages/at9.png",
+      src: "/images/pages/instructor (5).jpg",
       name: "Instructor 5",
       bio: "Bio for Instructor 5",
     },
     {
-      src: "/images/pages/at11.png",
+      src: "/images/pages/instructor (6).jpeg",
       name: "Instructor 6",
       bio: "Bio for Instructor 6",
     },
