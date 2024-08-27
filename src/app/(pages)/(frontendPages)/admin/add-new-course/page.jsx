@@ -15,22 +15,29 @@ const SearchableSelect = dynamic(
     ssr: false, // Set ssr to false to prevent SSR for this component
   }
 );
-
 const courseSchema = z.object({
   courseTitle: z.string().min(1, "Course title is required."),
   shortDescription: z.string().optional(),
   description: z.string().optional(),
-  selectedProgrammingLanguage: z.string().nullable(),
-  selectedProgrammingLevel: z.string().nullable(),
-  selectedLanguage: z.string().nullable(),
+  selectedProgrammingLanguage: z.string({
+    message: "Please select at least one course category.",
+  }),
+  selectedProgrammingLevel: z.string({
+    message: "Please select at least one course level.",
+  }),
+  selectedLanguage: z.string({
+    message: "Please select at least one course language.",
+  }),
   faq: z.string().optional(),
   requirements: z.string().optional(),
   isFreeCourse: z.boolean(),
-  coursePrice: z.string().optional(),
+  coursePrice: z.string().trim().min(1, "Course price is required.").max(6, "Course price is too much Please confirm the price"),
   hasDiscount: z.boolean(),
   discountedPrice: z.string().optional(),
-  courseOverviewProvider: z.string().nullable(),
-  coursetype: z.string().nullable(),
+  courseOverviewProvider: z.string({
+    message: "Please select a course overview provider.",
+  }),
+  coursetype: z.string({ message: "Please select a course type." }),
   courseOverviewUrl: z.string().optional(),
   metaKeywords: z.string().optional(),
   metaDescription: z.string().optional(),
@@ -47,8 +54,6 @@ const AddNewCourse = () => {
   const [errors, setErrors] = useState({});
   const router = useRouter();
   const { id } = useParams();
-  console.log(id);
-
   // Form state management
   const [formData, setFormData] = useState({
     courseTitle: "",
@@ -60,7 +65,7 @@ const AddNewCourse = () => {
     faq: "",
     requirements: "",
     isFreeCourse: false,
-    coursePrice: "",
+    coursePrice: "0", // Set default to "0"
     hasDiscount: false,
     discountedPrice: "",
     courseOverviewProvider: null,
@@ -74,15 +79,8 @@ const AddNewCourse = () => {
     thumbnail: "",
   });
 
-  // State variables for select options
-  const [selectedProgramming_language, setSelectedProgramming_language] =
-    useState(null);
-  const [selectedProgramming_level, setSelectedProgramming_level] =
-    useState(null);
-  const [selectedlanguage, setSelectedlanguage] = useState(null);
-
   // Static select options
-  const Programming_language = [
+  const selectedProgrammingLanguage = [
     { label: "Social Issues", value: "social_issues", category: "Social Work" },
     { label: "Health", value: "health", category: "Healthcare" },
     { label: "Legal", value: "legal", category: "Legal System" },
@@ -105,14 +103,15 @@ const AddNewCourse = () => {
     },
   ];
 
-  const Programming_level = [
+  const selectedProgrammingLevel = [
     { label: "Beginner", value: "Beginner", category: "level" },
     { label: "Intermediate", value: "Intermediate", category: "level" },
     { label: "Advanced", value: "Advanced", category: "level" },
   ];
 
-  const language = [
+  const selectedLanguage = [
     { label: "English", value: "English", category: "language" },
+    { label: "Spanish", value: "Spanish", category: "language" },
   ];
 
   const courseOverviewProvider = [
@@ -143,7 +142,7 @@ const AddNewCourse = () => {
     }));
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [name]: undefined,
+      [id]: undefined,
     }));
   };
 
@@ -158,46 +157,54 @@ const AddNewCourse = () => {
 
   // Handle searchable select changes
   const handleSelectChange = (selectedItem, category) => {
-    const selectedValue = selectedItem.value; // Extract only the value
+    // Check if selectedItem is an array or single object
+    const selectedValue = Array.isArray(selectedItem)
+      ? selectedItem.map((item) => item.value)
+      : selectedItem?.value;
+
     switch (category) {
-      case "Programming_language":
-        setSelectedProgramming_language(selectedValue);
-        setFormData({
-          ...formData,
+      case "selectedProgrammingLanguage":
+        // setSelectedProgramming_language(selectedValue);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           selectedProgrammingLanguage: selectedValue,
-        });
+        }));
         break;
-      case "Programming_level":
-        setSelectedProgramming_level(selectedValue);
-        setFormData({
-          ...formData,
+      case "selectedProgrammingLevel":
+        // setSelectedProgramming_level(selectedValue);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           selectedProgrammingLevel: selectedValue,
-        });
+        }));
         break;
-      case "language":
-        setSelectedlanguage(selectedValue);
-        setFormData({
-          ...formData,
+      case "selectedLanguage":
+        // setSelectedlanguage(selectedValue);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           selectedLanguage: selectedValue,
-        });
+        }));
         break;
       case "courseOverviewProvider":
-        setFormData({
-          ...formData,
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           courseOverviewProvider: selectedValue,
-        });
+        }));
         break;
       case "coursetype":
-        setFormData({
-          ...formData,
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           coursetype: selectedValue,
-        });
+        }));
         break;
       default:
         break;
     }
 
-    console.log("Selected value:", selectedValue); // Log the selected value only
+    // Clear the specific error related to the category
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [category]: "", // Set to an empty string instead of undefined
+    }));
   };
 
   // Handle form submission
@@ -212,10 +219,8 @@ const AddNewCourse = () => {
       setErrors({});
       // Send validated data to backend endpoint
       console.log(validatedData);
-      const response = await axios.post("/apiRoutes/addcourses", validatedData);
+      const response = await axios.post("/apiRoutes/addcourse", validatedData);
       toast.success("Course added successfully");
-      console.log("Course added successfully:", response.data);
-
       // Reset formData state
       setFormData({
         courseTitle: "",
@@ -345,15 +350,20 @@ const AddNewCourse = () => {
                 </div>
                 <div className="md:w-1/2">
                   <SearchableSelect
-                    options={Programming_language}
+                    options={selectedProgrammingLanguage}
                     onSelect={(value) =>
-                      handleSelectChange(value, "Programming_language")
+                      handleSelectChange(value, "selectedProgrammingLanguage")
                     }
-                    defaultValue={Programming_language.find(
+                    defaultValue={selectedProgrammingLanguage.find(
                       (option) =>
                         option.value === formData.selectedProgrammingLanguage
                     )}
                   />
+                  {errors.selectedProgrammingLanguage && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.selectedProgrammingLanguage}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -365,15 +375,20 @@ const AddNewCourse = () => {
                 </div>
                 <div className="md:w-1/2">
                   <SearchableSelect
-                    options={Programming_level}
+                    options={selectedProgrammingLevel}
                     onSelect={(value) =>
-                      handleSelectChange(value, "Programming_level")
+                      handleSelectChange(value, "selectedProgrammingLevel")
                     }
-                    defaultValue={Programming_level.find(
+                    defaultValue={selectedProgrammingLevel.find(
                       (option) =>
                         option.value === formData.selectedProgrammingLevel
                     )}
                   />
+                  {errors.selectedProgrammingLevel && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.selectedProgrammingLevel}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -385,12 +400,17 @@ const AddNewCourse = () => {
                 </div>
                 <div className="md:w-1/2">
                   <SearchableSelect
-                    options={language}
-                    onSelect={(value) => handleSelectChange(value, "language")}
-                    defaultValue={language.find(
+                    options={selectedLanguage}
+                    onSelect={(value) => handleSelectChange(value, "selectedLanguage")}
+                    defaultValue={selectedLanguage.find(
                       (option) => option.value === formData.selectedLanguage
                     )}
                   />
+                  {errors.selectedLanguage && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.selectedLanguage}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -481,7 +501,7 @@ const AddNewCourse = () => {
                   <input
                     className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     id="faq"
-                    placeholder="Enter the title"
+                    placeholder="Enter the faq"
                     type="text"
                     value={formData.faq}
                     onChange={handleInputChange}
@@ -535,18 +555,27 @@ const AddNewCourse = () => {
                       className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
                       htmlFor="coursePrice"
                     >
-                      Course Price $
+                      Course Price $ <span className="text-red-400">*</span>
                     </label>
                   </div>
                   <div className="md:w-1/2">
                     <input
-                      className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className={`block w-full p-2 text-gray-900 border ${
+                        errors.courseTitle
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                       id="coursePrice"
                       placeholder="Enter the price"
-                      type="text"
+                      type="number"
                       value={formData.coursePrice}
                       onChange={handleInputChange}
                     />
+                    {errors.coursePrice && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.coursePrice}
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
@@ -623,6 +652,11 @@ const AddNewCourse = () => {
                         option.value === formData.courseOverviewProvider
                     )}
                   />
+                  {errors.courseOverviewProvider && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.courseOverviewProvider}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -649,7 +683,7 @@ const AddNewCourse = () => {
               <div className="md:flex md:items-center mb-6">
                 <div className="md:w-1/3">
                   <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
-                    Course Overview Provider
+                    Select course type
                   </label>
                 </div>
                 <div className="md:w-1/2">
@@ -662,6 +696,11 @@ const AddNewCourse = () => {
                       (option) => option.value === formData.coursetype
                     )}
                   />
+                  {errors.coursetype && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.coursetype}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

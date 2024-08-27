@@ -75,7 +75,8 @@ export const POST = async (req) => {
       lesson,
       section,
       status,
-      thumbnail
+      thumbnail,
+      coursetype
     } = await req.json();
 
     const courseId = Math.floor(100 + Math.random() * 90000);
@@ -105,9 +106,10 @@ export const POST = async (req) => {
         lesson,
         section,
         status,
-        thumbnail
+        thumbnail,
+        coursetype
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23
       ) RETURNING *;
     `;
 
@@ -133,7 +135,8 @@ export const POST = async (req) => {
       lesson,
       section,
       status,
-      thumbnail
+      thumbnail,
+      coursetype
     ]);
 
     client.release();
@@ -188,7 +191,8 @@ export const PUT = async (req) => {
       lesson,
       section,
       status,
-      thumbnail
+      thumbnail,
+      coursetype
     } = await req.json();
 
     const updateQuery = `
@@ -213,7 +217,8 @@ export const PUT = async (req) => {
         lesson = $18,
         section = $19,
         status = $20,
-        thumbnail = $21
+        thumbnail = $21,
+        coursetype = $22
       WHERE
         id = $1
       RETURNING *;
@@ -240,7 +245,8 @@ export const PUT = async (req) => {
       lesson,
       section,
       status,
-      thumbnail
+      thumbnail,
+      coursetype
     ]);
 
     client.release();

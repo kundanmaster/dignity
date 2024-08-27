@@ -1,67 +1,78 @@
-"use client"
-import React,{ useState, useEffect } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import CustomCard from "@/components/client/common/CustomCard";
-import social_issu from "public/images/pages/social_issues.jpg";
-import physicimg from "public/images/pages/physics.jpg";
 import AdminDashboardLayout from "@/components/server/admin/dashboard/AdminDashboardLayout";
 import axios from "axios";
-import { useAuth } from "@/hooks/auth/authContext";
-import { FaJava, FaPython, FaJs, FaHtml5, FaPhp } from "react-icons/fa";
-import { FaAtom, FaThermometer, FaMagnet, FaRocket } from "react-icons/fa";
-import { FaHandsHelping, FaStethoscope, FaGavel, FaGraduationCap, FaBalanceScale, FaChild, FaUsers, FaBullhorn } from 'react-icons/fa';
+import { FaGraduationCap } from 'react-icons/fa';
+import onlineclass from "/public/images/pages/online-class.jpg";
+import zoomclass from "/public/images/pages/zoom.png";
+import { GiOpenBook } from "react-icons/gi";
+import { useRouter } from "next/navigation";
+
+// Mapping of providers to icons
+const iconMap = {
+  'vineo': <FaGraduationCap />,
+  // Add other mappings if necessary
+};
 
 const CourseCategory = () => {
-  const [users, setUsers] = useState([]);
-  const { user } = useAuth();
+  const [courses, setCourses] = useState([]);
+  const router = useRouter();
+
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchCourses = async () => {
       try {
-        const response = await axios.get("/apiRoutes/users");
-        setUsers(response.data);
+        const response = await axios.get("/apiRoutes/addcourse");
+        if (response.data.success) {
+          setCourses(response.data.courses);
+        } else {
+          console.error("Error fetching courses:", response.data.error);
+        }
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching courses:", error);
       }
     };
-    fetchUsers();
-    
+    fetchCourses();
   }, []);
 
+  // Filter courses by category
+  const onlineCourses = courses.filter(course => course.coursetype === 'online_classes');
+  const zoomCourses = courses.filter(course => course.coursetype === 'zoom_classes');
 
-  const programmingLanguages = [
-  { name: "Social Issues", email: "Social Work", icon: <FaHandsHelping /> },
-  { name: "Health", email: "Healthcare", icon: <FaStethoscope /> },
-  { name: "Legal", email: "Legal System", icon: <FaGavel /> },
-  { name: "Education", email: "Education", icon: <FaGraduationCap /> },
-  { name: "Human Rights", email: "Human Rights", icon: <FaBalanceScale /> },
-  { name: "Child Welfare", email: "Child Welfare", icon: <FaChild /> },
-  { name: "Community Support", email: "Community", icon: <FaUsers /> },
-  { name: "Policy and Advocacy", email: "Advocacy", icon: <FaBullhorn /> }
-  ];
+  // Transform course data for CustomCard
+  const transformCourseData = (courseList) => courseList.map((course) => ({
+    name: (course.selected_programming_language || '').toUpperCase(),
+    email: course.course_title,
+    icon: iconMap[course.course_overview_provider] || <GiOpenBook />,
+    onEdit: () => onEdit(course.id), // Pass course ID to onEdit
+  }));
 
-  const physicsCourses = [
-    { name: "Quantum Mechanics", email: "Physics Course", icon: <FaAtom /> },
-    {
-      name: "Thermodynamics",
-      email: "Physics Course",
-      icon: <FaThermometer />,
-    },
-    { name: "Electromagnetism", email: "Physics Course", icon: <FaMagnet /> },
-    { name: "Relativity", email: "Physics Course", icon: <FaRocket /> },
-  ];
+  const onlineCoursesData = transformCourseData(onlineCourses);
+  const zoomCoursesData = transformCourseData(zoomCourses);
+
+  const onEdit = (id) => {
+    console.log("Edit clicked for ID:", id);
+    if (id) {
+      router.push(`/admin/add-new-course/${id}`);
+    } else {
+      console.log("Invalid ID");
+      return;
+    }
+  };
 
   return (
     <AdminDashboardLayout>
       <div className="flex gap-4">
         <CustomCard
-          label={"All Courses"}
-          custom_img={social_issu}
-          customers={programmingLanguages}
+          label={"Online Classes"}
+          custom_img={onlineclass} // Update as necessary
+          customers={onlineCoursesData}
         />
-        {/* <CustomCard
-          label="Health"
-          custom_img={physicimg}
-          customers={physicsCourses}
-        /> */}
+        <CustomCard
+          label={"Zoom Classes"}
+          custom_img={zoomclass} // Update as necessary
+          customers={zoomCoursesData}
+        />
       </div>
     </AdminDashboardLayout>
   );
