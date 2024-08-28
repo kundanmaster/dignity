@@ -7,6 +7,12 @@ export async function middleware(req) {
   const token = cookieStore.get("token")?.value;
   const { pathname } = req.nextUrl;
 
+  // Set CORS headers
+  const response = NextResponse.next();
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
   // Paths that don't require authentication
   const publicPaths = ["/signin", "/signup"];
 
@@ -16,7 +22,7 @@ export async function middleware(req) {
   try {
     if (pathname === "/") {
       // Allow access to the home page for all users
-      return NextResponse.next();
+      return response;
     }
 
     if (token) {
@@ -30,11 +36,11 @@ export async function middleware(req) {
       // Allow access to protected pages based on user role
       if (decoded.role === "admin") {
         // Admin can access any protected path
-        return NextResponse.next();
+        return response;
       } else if (decoded.role === "user") {
         // User can only access /user paths
         if (pathname.startsWith("/user")) {
-          return NextResponse.next();
+          return response;
         } else {
           // Redirect to homepage if user tries to access /admin or /instructor paths
           return NextResponse.redirect(new URL("/", req.url));
@@ -42,7 +48,7 @@ export async function middleware(req) {
       } else if (decoded.role === "instructor") {
         // Instructor can only access /instructor paths
         if (pathname.startsWith("/instructor")) {
-          return NextResponse.next();
+          return response;
         } else {
           // Redirect to homepage if instructor tries to access /admin or /user paths
           return NextResponse.redirect(new URL("/", req.url));
@@ -59,7 +65,7 @@ export async function middleware(req) {
     return NextResponse.redirect(new URL("/signin", req.url));
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
