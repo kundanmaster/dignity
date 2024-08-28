@@ -309,7 +309,7 @@ const AddNewCourse = ({ params }) => {
       });
 
       setLoading(false);
-      router.push(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/manage-courses`);
+      router.push(`https://dignity-sand.vercel.app/admin/manage-courses`);
       // Optionally, you can redirect or show a success message
     } catch (error) {
       if (error instanceof z.ZodError) {
