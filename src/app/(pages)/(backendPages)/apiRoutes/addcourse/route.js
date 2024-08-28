@@ -102,7 +102,7 @@ export const POST = async (req) => {
         selected_programming_language,
         selected_programming_level,
         short_description,
-        created_by, 
+        created_by,
         lesson,
         section,
         status,
