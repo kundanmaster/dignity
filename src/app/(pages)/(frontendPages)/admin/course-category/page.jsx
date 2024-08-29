@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 
 // Mapping of providers to icons
 const iconMap = {
-  'vineo': <FaGraduationCap />,
+  'vimeo': <FaGraduationCap />,
   // Add other mappings if necessary
 };
 

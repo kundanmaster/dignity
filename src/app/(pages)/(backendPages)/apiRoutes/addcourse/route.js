@@ -2,19 +2,19 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { pool } from "@/lib/db";
 
-// Common CORS Headers
-const corsHeaders = {
-  "Access-Control-Allow-Credentials": "true",
-  "Access-Control-Allow-Origin": "*", // Replace with your actual domain in production
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers":
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
-};
+// // Common CORS Headers
+// const corsHeaders = {
+//   "Access-Control-Allow-Credentials": "true",
+//   "Access-Control-Allow-Origin": "*", // Replace with your actual domain in production
+//   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+//   "Access-Control-Allow-Headers":
+//     "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+// };
 
-// Handle OPTIONS requests for CORS
-export const OPTIONS = (req) => {
-  return NextResponse.json({}, { headers: corsHeaders });
-};
+// // Handle OPTIONS requests for CORS
+// export const OPTIONS = (req) => {
+//   return NextResponse.json({}, { headers: corsHeaders });
+// };
 
 export const GET = async (request) => {
   let id = request.nextUrl.searchParams.get("id");

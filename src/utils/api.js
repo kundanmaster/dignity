@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:3000/apiRoutes'; 
+const baseURL = '/apiRoutes'; 
 
 const axiosInstance = axios.create({
   baseURL,
