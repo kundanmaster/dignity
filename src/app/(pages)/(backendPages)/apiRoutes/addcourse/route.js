@@ -2,25 +2,19 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { pool } from "@/lib/db";
 
-// // Common CORS Headers
-// const corsHeaders = {
-//   "Access-Control-Allow-Credentials": "true",
-//   "Access-Control-Allow-Origin": "*", // Replace with your actual domain in production
-//   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-//   "Access-Control-Allow-Headers":
-//     "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
-// };
-
-// // Handle OPTIONS requests for CORS
-// export const OPTIONS = (req) => {
-//   return NextResponse.json({}, { headers: corsHeaders });
-// };
 
 export const GET = async (request) => {
   let id = request.nextUrl.searchParams.get("id");
+  // const token = request.cookies.get("token")?.value; 
+
+  // if (!token) {
+  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // }
 
   try {
-    const client = await pool.connect();
+    // const decoded = jwt.verify(token, process.env.JWT_SECRET); 
+    const client = await pool.connect(); 
+
     let result;
 
     if (id) {
@@ -34,31 +28,24 @@ export const GET = async (request) => {
     if (result.rows.length > 0) {
       return NextResponse.json(
         { success: true, courses: result.rows },
-        { status: 200, headers: corsHeaders }
+        { status: 200 }
       );
     } else {
-      return NextResponse.json(
-        { error: "Courses not found" },
-        { status: 404, headers: corsHeaders }
-      );
+      return NextResponse.json({ error: "Courses not found" }, { status: 404 });
     }
   } catch (error) {
     console.error("Error fetching courses:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500, headers: corsHeaders }
+      { status: 500 }
     );
   }
 };
 
 export const POST = async (req) => {
   const token = req.cookies.get("token")?.value;
-
   if (!token) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401, headers: corsHeaders }
-    );
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
@@ -86,12 +73,11 @@ export const POST = async (req) => {
       section,
       status,
       thumbnail,
-      coursetype,
+      coursetype
     } = await req.json();
 
     const courseId = Math.floor(100 + Math.random() * 90000);
     const createdBy = decoded.id;
-
     const insertQuery = `
       INSERT INTO courses (
         course_id,
@@ -111,12 +97,12 @@ export const POST = async (req) => {
         selected_programming_language,
         selected_programming_level,
         short_description,
-        created_by,
+        created_by, 
         lesson,
         section,
         status,
         thumbnail,
-        coursetype
+        coursetype,
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23
       ) RETURNING *;
@@ -152,34 +138,24 @@ export const POST = async (req) => {
 
     if (result.rows.length > 0) {
       const course = result.rows[0];
-      return NextResponse.json(
-        { success: true, course },
-        { status: 201, headers: corsHeaders }
-      );
+      return NextResponse.json({ success: true, course }, { status: 201 });
     } else {
-      return NextResponse.json(
-        { error: "Course not added" },
-        { status: 400, headers: corsHeaders }
-      );
+      return NextResponse.json({ error: "Course not added" }, { status: 400 });
     }
   } catch (error) {
     console.error("Error inserting course details:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500, headers: corsHeaders }
+      { status: 500 }
     );
   }
 };
 
 export const PUT = async (req) => {
   const token = req.cookies.get("token")?.value;
-  const id = req.nextUrl.searchParams.get("id");
-
+  let id = req.nextUrl.searchParams.get("id");
   if (!token) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401, headers: corsHeaders }
-    );
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
@@ -187,6 +163,7 @@ export const PUT = async (req) => {
     const client = await pool.connect();
 
     const {
+      id,
       courseOverviewProvider,
       courseOverviewUrl,
       coursePrice,
@@ -233,7 +210,7 @@ export const PUT = async (req) => {
         section = $19,
         status = $20,
         thumbnail = $21,
-        coursetype = $22
+        coursetype= $22
       WHERE
         id = $1
       RETURNING *;
@@ -268,34 +245,26 @@ export const PUT = async (req) => {
 
     if (result.rows.length > 0) {
       const updatedCourse = result.rows[0];
-      return NextResponse.json(
-        { success: true, course: updatedCourse },
-        { status: 200, headers: corsHeaders }
-      );
+      return NextResponse.json({ success: true, course: updatedCourse }, { status: 200 });
     } else {
-      return NextResponse.json(
-        { error: "Course not found or updated" },
-        { status: 404, headers: corsHeaders }
-      );
+      return NextResponse.json({ error: "Course not found or updated" }, { status: 404 });
     }
   } catch (error) {
     console.error("Error updating course details:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500, headers: corsHeaders }
+      { status: 500 }
     );
   }
 };
 
+
+// DELETE handler
 export const DELETE = async (req) => {
   const token = req.cookies.get("token")?.value;
   const id = req.nextUrl.searchParams.get("id");
-
   if (!token) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401, headers: corsHeaders }
-    );
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
@@ -313,21 +282,15 @@ export const DELETE = async (req) => {
     client.release();
 
     if (result.rows.length > 0) {
-      return NextResponse.json(
-        { success: true, message: "Course deleted successfully" },
-        { status: 200, headers: corsHeaders }
-      );
+      return NextResponse.json({ success: true, message: "Course deleted successfully" }, { status: 200 });
     } else {
-      return NextResponse.json(
-        { error: "Course not found or not deleted" },
-        { status: 404, headers: corsHeaders }
-      );
+      return NextResponse.json({ error: "Course not found or not deleted" }, { status: 404 });
     }
   } catch (error) {
     console.error("Error deleting course:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500, headers: corsHeaders }
+      { status: 500 }
     );
   }
 };
