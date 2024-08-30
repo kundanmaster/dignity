@@ -62,7 +62,6 @@ export const GET = async (req) => {
 
 export const PATCH = async (req) => {
   const id = req.nextUrl.searchParams.get("id");
-  console.log(id);
 
   const token = req.cookies.get("token")?.value;
 

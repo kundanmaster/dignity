@@ -137,6 +137,7 @@ const Footer = () => {
             </div>
           </div>
 
+
           <div>
             <h4 className="text-lg font-semibold mb-4">Courses</h4>
             <ul className="space-y-2">

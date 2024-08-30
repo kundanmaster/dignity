@@ -23,7 +23,6 @@ const getAccessToken = async () => {
     }
 
     const data = await response.json();
-    console.log('Access token:', data.access_token);
     return data.access_token;
   } catch (error) {
     console.error('Error in getAccessToken:', error);
@@ -32,7 +31,6 @@ const getAccessToken = async () => {
 };
 
 export async function POST(req) {
-  console.log(req.amount);
   
   try {
     const { amount } = await req.json();

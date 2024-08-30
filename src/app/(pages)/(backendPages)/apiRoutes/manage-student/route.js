@@ -222,7 +222,6 @@ export const PUT = async (req) => {
 export const DELETE = async (req) => {
   const token = req.cookies.get("token")?.value;
   const id = req.nextUrl.searchParams.get("id");
-  console.log(id);
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

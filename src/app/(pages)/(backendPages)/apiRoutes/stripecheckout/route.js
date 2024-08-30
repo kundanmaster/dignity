@@ -15,9 +15,9 @@ export async function POST(req) {
     const { amount, currency, enrollmentData } = await req.json();
 
     // Ensure that the origin is set; otherwise, use a fallback URL
-    // const origin = req.headers.origin || "https://dignity-sand.vercel.app";
+    const origin = req.headers.origin || "https://dignity-sand.vercel.app";
     // const origin = req.headers.origin || "https://www.dignitymedicaltraining.com";
-    const origin = req.headers.origin || "https://localhost:3000";
+    // const origin = req.headers.origin || "https://localhost:3000";
 
     // Create a Stripe Checkout session
     const session = await stripe.checkout.sessions.create({

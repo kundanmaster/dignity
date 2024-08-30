@@ -80,7 +80,7 @@ const Instructor = () => {
                   VIEW ALL COURSES
                 </button>
               </Link>
-              <a className="" href="#online" >
+              <a className="" href="#online">
                 <button className="border border-goldlight text-primarygold hover:bg-goldlight hover:text-white py-2 px-4 rounded-lg shadow-md">
                   CHECK OUT OUR ONLINE ZOOM CLASSES
                 </button>

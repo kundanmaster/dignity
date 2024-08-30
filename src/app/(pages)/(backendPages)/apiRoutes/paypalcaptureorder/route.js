@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db"; // Adjust the path to your actual db file
 
-const PAYPAL_API = "https://api-m.sandbox.paypal.com/v2/checkout/orders";
+// const PAYPAL_API = "https://api-m.sandbox.paypal.com/v2/checkout/orders";
+const PAYPAL_API = "https://api-m.paypal.com/v2/checkout/orders";
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_SECRET;
 
 const getAccessToken = async () => {
   const response = await fetch(
-    "https://api-m.sandbox.paypal.com/v1/oauth2/token",
+    // "https://api-m.sandbox.paypal.com/v1/oauth2/token",
+     "https://api-m.paypal.com/v1/oauth2/token",
     {
       method: "POST",
       headers: {
@@ -44,7 +46,6 @@ export async function POST(req) {
     });
 
     const capture = await response.json();
-    console.log(capture);
 
     if (!response.ok) {
       throw new Error(capture.error || "Error capturing PayPal order");

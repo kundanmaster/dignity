@@ -35,10 +35,12 @@ const signUpSchema = z
   .refine(
     (data) =>
       data.role === "user" ||
-      (data.identityProof && data.specialtyAreas && data.degrees && data.onlineTeachingExperience),
+      (data.identityProof &&
+        data.specialtyAreas &&
+        data.degrees &&
+        data.onlineTeachingExperience),
     {
-      message:
-        "Instructor details are required for the instructor role",
+      message: "Instructor details are required for the instructor role",
       path: ["role"], // Adjust the path if you want to show the error at a specific field
     }
   );
@@ -69,6 +71,22 @@ export default function SignUp() {
     // Add more options as needed
   ];
 
+  // const specialtyAreaOptions = [
+  //   { value: "", label: "Select a Specialty Area" },
+  //   { value: "room_class", label: "Room Class" },
+  //   { value: "zoom_class", label: "Zoom Class" },
+  //   { value: "online_self_class", label: "Online Self Class" },
+  //   // Add more options as needed
+  // ];
+
+  // const degreeOptions = [
+  //   { value: "", label: "Select a Degree" },
+  //   { value: "bachelor", label: "Bachelor's Degree" },
+  //   { value: "master", label: "Master's Degree" },
+  //   { value: "phd", label: "Ph.D." },
+  //   // Add more options as needed
+  // ];
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -88,7 +106,7 @@ export default function SignUp() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-  
+
     try {
       const result = signUpSchema.safeParse({
         firstname,
@@ -103,13 +121,13 @@ export default function SignUp() {
         onlineTeachingExperience,
         verified,
       });
-  
+
       if (!result.success) {
         setError(result.error.errors[0].message);
         setLoading(false);
         return;
       }
-  
+
       const response = await axios.post("/apiRoutes/signup", {
         firstname,
         lastname,
@@ -119,11 +137,13 @@ export default function SignUp() {
         identityProof: role === "instructor" ? identityProof : undefined,
         specialtyAreas: role === "instructor" ? specialtyAreas : undefined,
         degrees: role === "instructor" ? degrees : undefined,
-        teachingPhilosophy: role === "instructor" ? teachingPhilosophy : undefined,
-        onlineTeachingExperience: role === "instructor" ? onlineTeachingExperience : undefined,
+        teachingPhilosophy:
+          role === "instructor" ? teachingPhilosophy : undefined,
+        onlineTeachingExperience:
+          role === "instructor" ? onlineTeachingExperience : undefined,
         verified: role === "instructor" ? verified : undefined,
       });
-  
+
       if (response.data.success) {
         toast.success("Signup successful");
         router.push("/signin");

@@ -23,7 +23,6 @@ export const POST = async (req) => {
   }
 
   const { sender_id, receiver_id, content } = await req.json();
-  console.log("Body", sender_id, receiver_id, content);
 
   // Validate required fields
   if (!sender_id || !receiver_id || !content) {
